@@ -1,7 +1,8 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms import fields, widgets
-from edu.models import College
+from edu.models import College, News
+
 
 
 class PubForm(forms.Form):
@@ -40,3 +41,9 @@ class PubForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PubForm, self).__init__(*args, **kwargs)
         self.fields['college_id'].widget.choices = College.objects.values_list("id", "name")
+
+
+class NewsForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ["title","content",]

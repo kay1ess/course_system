@@ -4,20 +4,26 @@
 {% endblock %}
 
 {% block head %}
+<style>
 
+    .content {
+        min-height: 480px;
+    }
+
+</style>
 {% endblock %}
 
 {% block body %}
     <div class="container">
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
-        <h1>this is index page</h1>
+        <div class="content">
+            <h1>this is index page</h1>
+            <h1>this is index page</h1>
+            <h1>this is index page</h1>
+            <h1>this is index page</h1>
+        </div>
     </div>
+
+    <script>
+        $("#nav1").addClass("active");
+    </script>
 {% endblock %}

@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+from extra_app.DjangoUeditor.models import UEditorField
+
 
 # Create your models here.
 
@@ -33,8 +35,10 @@ class EduAdmin(models.Model):
     birth = models.CharField(max_length=10)
 
 class News(models.Model):
-    title = models.CharField(max_length=40)
-    content = models.TextField(max_length=2000)
+    title = models.CharField(max_length=40, null=False)
+    content = UEditorField(max_length=2000,width=1000 , height=300, toolbars='normal', imagePath='news_images/',
+                           filePath='news_files/', upload_settings={'imageMaxSize': 120400000},
+                           settings={}, command=None, verbose_name="正文")
     c_time = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(EduAdmin, on_delete=models.SET_NULL, null=True)
 

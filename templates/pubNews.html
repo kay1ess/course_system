@@ -1,0 +1,73 @@
+{% extends "edu_base.html" %}
+{% block title %}
+发布消息
+{% endblock %}
+
+{% block head %}
+    {% load static %}
+    <style>
+        .fm-title {
+            float: right;
+            margin: 10px 0;
+            margin-right: 0px;
+
+        }
+        label {
+            font-size: 20px;
+        }
+        .table-div {
+            min-height: 480px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <div class="fm-title">
+            <a href="newNews.html"> <button type="button" class="btn btn-success" >发布新消息</button></a>
+            <a href="#"> <button type="button" class="btn btn-primary" id="newMan">消息管理</button></a>
+        </div>
+
+        <div class="table-div">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>标题</th>
+                        <th>内容</th>
+                        <th>发布者</th>
+                        <th>发布时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% if news_list %}
+
+                        {% for news in news_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ news.title }}</td>
+                                <td>{{ news.content|striptags|slice:":30" }}...</td>
+                                <td>{{ news.created_by }}</td>
+                                <td>{{ news.c_time|date:'Y年/M/j日,H时' }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+
+
+<script>
+
+        $("#nav2").addClass("active");
+
+
+</script>
+{% endblock %}

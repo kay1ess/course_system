@@ -1,0 +1,106 @@
+{% extends "edu_base.html" %}
+{% block title %}
+编辑新消息
+{% endblock %}
+
+{% block head %}
+    {% load static %}
+    <style>
+
+        label {
+            font-size: 20px;
+        }
+        #err_content {
+                color: red;
+                font-size: 20px;
+            }
+        #err_title {
+            color: red;
+            font-size: 20px;
+        }
+        .panel-heading {
+            color: dodgerblue;
+            font-size: 20px;
+        }
+        .btns {
+            text-align: center;
+        }
+        .container {
+            padding-top: 10px;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'ueditor/third-party/SyntaxHighlighter/shCoreDefault.css' %}">
+    <script type="text/javascript" src="{% static 'ueditor/third-party/SyntaxHighlighter/shCore.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ueditor/ueditor.config.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ueditor/ueditor.all.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ueditor/lang/zh-cn/zh-cn.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">发布新消息</div>
+            <div class="panel-body">
+                <form id="newfm" method="post">
+                    {% csrf_token %}
+                    <p>
+                        <label>标题：</label>
+                        <br>
+                        <input name="title" type="text" class="form-control" placeholder="在这里写下标题">
+                        <br>
+                        <small id="err_title"></small>
+                    </p>
+
+                    <small class="text-muted">标题最多不能超过40个字哦~</small>
+                    </p>
+                    <p>
+                        <label>正文：</label>
+                        <br>
+                        {{ obj.content }}
+                        <br>
+                        <small id="err_content"></small>
+                        <br>
+                        <small class="text-muted">正文最多不能超过1800个字哦~</small>
+
+                    </p>
+                    <hr>
+                    <div class="btns">
+                    <a href="newNews.html"> <button type="button" class="btn btn-default" >取消</button></a>
+                    <button type="button" class="btn btn-primary" onclick="pubNews()">提交</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+$("#nav2").addClass("active");
+function pubNews() {
+
+            $("#err_title").html("");
+            $("#err_content").html("");
+            $("#err_msg").html("");
+            $.ajax({
+                url: "newNews.html",
+                type: "POST",
+                dataType: "json",
+                data: $("#newfm").serialize(),
+                success:function (arg) {
+                    if(arg.status){
+                        window.location.href = "/e/pubNews.html"
+                    }else {
+                        console.log(arg.msg);
+                        $("#err_title").html(arg.msg.title);
+                        $("#err_content").html(arg.msg.content);
+                        $("#err_msg").html(arg.msg);
+
+                    }
+                }
+            })
+        }
+</script>
+
+
+{% endblock %}

@@ -5,3 +5,4 @@ from edu import models
 admin.site.register(models.Position)
 admin.site.register(models.Grade)
 admin.site.register(models.College)
+admin.site.register(models.News)
