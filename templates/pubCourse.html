@@ -1,0 +1,160 @@
+{% extends "edu_base.html" %}
+{% block title %}
+发布课程
+{% endblock %}
+
+{% block head %}
+    <style>
+
+        .fm-title {
+            float: right;
+            width: 30%;
+            margin: 20px;
+            margin-right: 0px;
+
+        }
+        .fm-title a {
+            padding-right: 20px;
+        }
+        .table-div {
+            height: 100%;
+        }
+        #pubfm p {
+            text-align: center;
+            font-size: 20px;
+            color: rgb(93,95,97);
+        }
+        #pubfm p small {
+            text-align: center;
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <div class="fm-title">
+            <a href="#"> <button type="button" class="btn btn-success" id="newCourse">发布新课程</button></a>
+            <a href="#"> <button type="button" class="btn btn-success">批量发布课程</button></a>
+        </div>
+
+        <div class="table-div">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>授课学院</th>
+                        <th>学分</th>
+                        <th>发布日期</th>
+                        <th>课程状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if courses %}
+
+                        {% for cour in courses %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ cour.no }}</td>
+                                <td>{{ cour.name }}</td>
+                                <td>{{ cour.college.name }}</td>
+                                <td>{{ cour.credit }}</td>
+                                <td>{{ cour.ctime|date:'Y年/M/j日,H时' }}</td>
+                                {% if cour.status == None %}
+                                    <td>已发布</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+
+
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">发布新课程</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="pubfm">
+                        <div class="form-group">
+                            {% csrf_token %}
+
+                            <p>
+                                <span>{{ pub_form.no.label }}</span>
+                                {{ pub_form.no }}
+                                <br>
+                                <small id="errNo"></small></p>
+                            <p>
+                                <span>{{ pub_form.name.label }}</span>
+                                {{ pub_form.name }}
+                                <br>
+                                <small id="errName"></small></p>
+                            <p>
+                                <span>{{ pub_form.credit.label }}</span>
+                                {{ pub_form.credit }}
+                                <br>
+                                <small id="errCre"></small></p>
+                            <p>
+                                <span>{{ pub_form.college_id.label }}</span>
+                                {{ pub_form.college_id }}</p>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <small><b id="err_msg" style="float: left"></b></small>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="pubBtn" onclick="pubCourse();">发布</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            addEvent();
+        })
+
+        function addEvent() {
+            $("#newCourse").click(function () {
+                $("#addModal").modal("show");
+            })
+        }
+        function pubCourse() {
+
+            $.ajax({
+                url:'pubCourse.html',
+                type: "POST",
+                dataType: "JSON",
+                data: $("#pubfm").serialize(),
+                success:function (arg) {
+                    console.log(arg);
+                    if(arg.status){
+                        $("#addModal").modal("hide");
+                    }else{
+                        console.log("失败");
+                        $("#err_msg").html(arg.msg);
+                        $("#errNo").html(arg.msg.no);
+                        $("#errName").html(arg.msg.name);
+                        $("#errCre").html(arg.msg.credit);
+
+                    }
+                }
+
+            })
+        }
+    </script>
+{% endblock %}

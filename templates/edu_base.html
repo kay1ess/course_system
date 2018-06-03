@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}
+    {% endblock %}-选课系统
+    </title>
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <style type="text/css">
+
+        .head-nav {
+            height: 200px;
+            width: 100%;
+            background-color: rgb(145,109,200);
+
+        }
+        .head-nav p {
+            color: white;
+            font-size: 40px;
+            margin: 40px;
+        }
+        .head-nav span {
+            float: right;
+            font-size: 25px;
+            color: #fefefe;
+        }
+        #nav-li li {
+            font-size: 20px;
+            font-family: "Microsoft Sans Serif";
+        }
+
+        .footer-title {
+            height: 100px;
+            width: 100%;
+            background-color: rgb(77,77,77);
+            position: fixed;
+            bottom: 0;
+
+        }
+        .footer-title ul {
+            padding-top: 18px;
+            padding-bottom: 3px;
+            text-align: center;
+        }
+        .footer-title ul li {
+            display: inline;
+
+            padding-right: 20px;
+            color: white;
+            list-style: none;
+            font-size: 20px;
+
+        }
+        .footer-title ul li a {
+            text-decoration-line: none;
+            color:white;
+            text-align: center;
+        }
+        .footer-title p {
+            text-align: center;
+            font-size: 12px;
+            color: rgb(218,220,225);
+        }
+        .footer-title p a {
+            text-decoration-line: none;
+            color: #5bc0de;
+        }
+    </style>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+
+    <div class="head-nav">
+        <div class="container">
+            {% block eduName %}
+            {% endblock %}
+            <p id="greet"></p>
+            <span id="bjtime"></span>
+        </div>
+    </div>
+    <div class="container">
+        <ul class="nav nav-tabs" id="nav-li">
+            <li role="presentation" onclick="navActive(this)"><a href="#">首页</a></li>
+            <li role="presentation" onclick="navActive(this)"><a href="#">发布消息</a></li>
+            <li role="presentation" onclick="navActive(this)"><a href="#">发布课程</a></li>
+            <li role="presentation" onclick="navActive(this)"><a href="#">审批课程</a></li>
+            <li role="presentation" onclick="navActive(this)"><a href="#">管理中心</a></li>
+        </ul>
+    </div>
+    {% block body %}
+    {% endblock %}
+
+    <footer class="footer-title">
+        <div class="container">
+            <ul class="ul-footer">
+                <li>
+                    <a href="#">github源码</a>
+                </li>
+                <li>
+                    <a href="#">关于作者</a>
+                </li>
+                <li>
+                    <a href="#">更多</a>
+                </li>
+            </ul>
+            <p>课程管理系统By<a href="#">@Kay</a>提供技术支持</p>
+
+        </div>
+    </footer>
+
+
+<script>
+    $(function () {
+      displayTime();
+      greet();
+    })
+    function displayTime() {
+        var t = new Date();
+        var h = t.getHours();
+        var m = t.getMinutes();
+        var s = t.getSeconds();
+        $("#bjtime").html("北京时间"+" &nbsp;"+h+":"+m+":"+s);
+        setTimeout(displayTime, 1000)
+    }
+    function greet() {
+        var t = new Date();
+        var h = t.getHours();
+        if(h>6 && h<=12) {
+            $("#greet").html("早上好， 欢迎您使用课程管理系统");
+        }else if(h>12 && h<=18) {
+            $("#greet").html("下午好， 欢迎您使用课程管理系统");
+        }else {
+            $("#greet").html("晚上好， 欢迎您使用课程管理系统");
+        }
+        setTimeout(greet, 1000*60*60)
+    }
+    function navActive(th) {
+        $(th).addClass("active");
+        $(th).siblings().removeClass("active");
+    }
+
+</script>
+</body>
+</html>

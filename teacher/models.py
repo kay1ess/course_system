@@ -7,13 +7,18 @@ from edu.models import College
 
 class Weeks(models.Model):
     name = models.CharField(max_length=7)
+    def __str__(self):
+        return self.name
 
 class Times(models.Model):
     duration = models.CharField(max_length=20)
+    def __str__(self):
+        return self.duration
 
 class Classroom(models.Model):
     name = models.CharField(max_length=20)
-
+    def __str__(self):
+        return self.name
 
 class AppliedCourse(models.Model):
     no = models.CharField(max_length=8, unique=True)
