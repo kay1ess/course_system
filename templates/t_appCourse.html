@@ -1,0 +1,191 @@
+{% extends "t_base.html" %}
+{% block title %}
+首页
+{% endblock %}
+
+{% block  head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+
+        #appfm p {
+            text-align: center;
+            font-size: 20px;
+            color: rgb(93,95,97);
+        }
+        #appfm p small {
+            text-align: center;
+            color: red;
+        }
+        #err_msg {
+            color: red;
+            font-size: 20px;
+        }
+        .table-div {
+            padding-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <div class="content">
+
+        <div class="table-div">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>授课学院</th>
+                        <th>学分</th>
+                        <th>发布日期</th>
+                        <th>申请操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tb">
+                    {% if courses %}
+
+                        {% for cour in courses %}
+                            <tr cno="{{ cour.no }}"
+                                cname = "{{ cour.name }}"
+                                ccollege = "{{ cour.college.name }}"
+                                ccredit = "{{ cour.credit }}"
+                                ccollegeid = "{{ cour.college.id }}"
+                            >
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ cour.no }}</td>
+                                <td>{{ cour.name }}</td>
+                                <td>{{ cour.college.name }}</td>
+                                <td>{{ cour.credit }}</td>
+                                <td>{{ cour.ctime|date:'Y年/M/j日,H时' }}</td>
+                                <td>
+                                <button type="button" class="btn btn-success" id="appCourse">申请新课程</button>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                        <td colspan="7"><h1 style="color: silver;text-align: center">目前暂无新课程发布</h1></td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">申请新课程</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="appfm">
+                        <div class="form-group">
+                            {% csrf_token %}
+
+                            <p>
+                                <span>课程号</span>
+                                <input class="form-control" type="text" disabled name="no">
+                                </p>
+                            <p>
+                            <p>
+                                <span>课程名</span>
+                                <input class="form-control" type="text" disabled name="name">
+                                </p>
+                            <p>
+                            <p>
+                                <span>学分</span>
+                                <input class="form-control" type="text" disabled name="credit">
+                                </p>
+                            <p>
+                            <p>
+                                <span>授课学院</span>
+                                <input class="form-control" type="text" disabled name="college_id">
+                                </p>
+                            <p>
+                                <span>教室</span>
+                                {{ obj.classroom_id }}
+                                </p>
+                            <p>
+                                <span>星期</span>
+                                {{ obj.week_id }}
+                               </p>
+                            <p>
+                                <span>时间</span>
+                                {{ obj.time_id }}</p>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <small><b id="err_msg" style="float: left"></b></small>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="appBtn">申请</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#nav2").addClass("active");
+        $(function () {
+            addEvent();
+        });
+
+        function addEvent() {
+            $("#tb").on('click', '#appCourse', function () {
+                $("#addModal").modal("show");
+                var no = $(this).parent().parent().attr("cno");
+                var name = $(this).parent().parent().attr("cname");
+                var collegeName = $(this).parent().parent().attr("ccollege");
+                var college_id = $(this).parent().parent().attr("ccollegeid");
+                var credit = $(this).parent().parent().attr("ccredit");
+                $(":text").eq(0).val(no);
+                $(":text").eq(1).val(name);
+                $(":text").eq(2).val(credit);
+                $(":text").eq(3).val(collegeName);
+
+                $("#appBtn").click(function () {
+                var dataPost = {};
+                    $("#addModal").find("input,select").each(function () {
+                        var v = $(this).val();
+                        var n = $(this).attr("name");
+                        if (n == "college_id") {
+                            dataPost[n] = college_id;
+                        } else {
+                            dataPost[n] = v;
+                        }
+                    });
+
+                    $.ajax({
+                        url: "appCourse.html",
+                        type: "POST",
+                        data: dataPost,
+                        dataType: "JSON",
+
+                        success: function (arg) {
+                            if(arg.status) {
+                                $("#addModal").modal("hide");
+                                alert("申请成功~~~")
+                                window.location.reload();
+                        }else{
+                                $("#err_msg").html(arg.msg);
+                            }
+                        }
+                    })
+
+                })
+
+
+
+            })
+        }
+    </script>
+{% endblock %}

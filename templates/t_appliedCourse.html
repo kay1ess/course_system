@@ -1,0 +1,94 @@
+{% extends "t_base.html" %}
+{% block title %}
+首页
+{% endblock %}
+
+{% block  head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+        .fm-title {
+            float: right;
+            margin: 10px;
+            margin-right: 0px;
+        }
+
+        #appfm p {
+            text-align: center;
+            font-size: 20px;
+            color: rgb(93,95,97);
+        }
+        #appfm p small {
+            text-align: center;
+            color: red;
+        }
+        .table-div {
+            padding-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <div class="content">
+        <div class="table-div">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>授课学院</th>
+                        <th>授课教师</th>
+                        <th>上课地点</th>
+                        <th>上课时间</th>
+                        <th>学分</th>
+                        <th>申请日期</th>
+                        <th>审核状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if applied_course_list %}
+                        {% for c in applied_course_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ c.no }}</td>
+                        <td>{{ c.name }}</td>
+                        <td>{{ c.college.name }}</td>
+                        <td>{{ c.teacher.name }}</td>
+                        <td>{{ c.classroom.name }}</td>
+                        <td>{{ c.time.duration }}, {{ c.week.name }}</td>
+                        <td>{{ c.credit }}</td>
+                        <td>{{ c.applied_time }}</td>
+                        {% if c.status == None %}
+                            <td>待审批</td>
+                        {% elif c.status == True %}
+                            <td>审批通过</td>
+                        {% else %}
+                            <td>审批未通过</td>
+                        {% endif %}
+                    </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7"><h1 style="color: silver;text-align: center">目前暂无新课程发布</h1></td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+
+    </div>
+    <script>
+        $("#nav3").addClass("active");
+        $(function () {
+            addEvent();
+        })
+
+
+    </script>
+{% endblock %}

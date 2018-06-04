@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}
-    {% endblock %}-课程管理系统
+    {% endblock %}-课程申请系统
     </title>
     <script src="/static/js/jquery-3.2.1.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
@@ -15,12 +15,14 @@
         .head-nav {
             height: 200px;
             width: 100%;
-            background-color: rgb(145,109,200);
+            background-image: url("/static/img/timg-2.jpeg");
+            opacity: 0.8;
 
         }
         .head-nav p {
-            color: white;
+            color: beige;
             font-size: 40px;
+            font-family: "HanziPen SC";
             margin: 40px;
         }
         .head-nav span {
@@ -85,12 +87,11 @@
     </div>
     <div class="container">
         <ul class="nav nav-tabs" id="nav-li">
-            <li id="nav1" ><a href="/e/index.html">首页</a></li>
-            <li id="nav2" ><a href="/e/pubNews.html">发布消息</a></li>
-            <li id="nav3" ><a href="/e/pubCourse.html">发布课程</a></li>
-            <li id="nav4" ><a href="#">审批课程</a></li>
-            <li id="nav5" ><a href="#">管理中心</a></li>
-            <li id="nav6" ><a href="#">个人中心</a></li>
+            <li id="nav1" ><a href="/t/index.html">首页</a></li>
+            <li id="nav2" ><a href="/t/appCourse.html">申请课程</a></li>
+            <li id="nav3" ><a href="/t/appliedCourse.html">已申请课程</a></li>
+            <li id="nav4" ><a href="/t/teachPlan.html">教学表</a></li>
+            <li id="nav5" ><a href="#">个人中心</a></li>
         </ul>
     </div>
     {% block body %}
@@ -132,11 +133,11 @@
         var t = new Date();
         var h = t.getHours();
         if(h>6 && h<=12) {
-            $("#greet").html("早上好， 欢迎您使用课程管理系统");
+            $("#greet").html("早上好， 欢迎您使用课程申请系统");
         }else if(h>12 && h<=18) {
-            $("#greet").html("下午好， 欢迎您使用课程管理系统");
+            $("#greet").html("下午好， 欢迎您使用课程申请系统");
         }else {
-            $("#greet").html("晚上好， 欢迎您使用课程管理系统");
+            $("#greet").html("晚上好， 欢迎您使用课程申请系统");
         }
         setTimeout(greet, 1000*60*60)
     }

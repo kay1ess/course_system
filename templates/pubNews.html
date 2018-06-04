@@ -48,7 +48,7 @@
                         {% for news in news_list %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ news.title }}</td>
+                                <td>{{ news.title|slice:":20" }}</td>
                                 <td>{{ news.content|striptags|slice:":30" }}...</td>
                                 <td>{{ news.created_by }}</td>
                                 <td>{{ news.c_time|date:'Y年/M/j日,H时' }}</td>

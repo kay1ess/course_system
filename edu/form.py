@@ -38,6 +38,7 @@ class PubForm(forms.Form):
     college_id = fields.IntegerField(widget=widgets.Select(),label="授课学院")
 
 
+
     def __init__(self, *args, **kwargs):
         super(PubForm, self).__init__(*args, **kwargs)
         self.fields['college_id'].widget.choices = College.objects.values_list("id", "name")

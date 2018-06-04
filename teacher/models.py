@@ -27,17 +27,20 @@ class AppliedCourse(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.SET_NULL, null=True)
     applied_time = models.DateTimeField(auto_now_add=True)
     credit = models.DecimalField(max_digits=2, decimal_places=1)
-    status = models.NullBooleanField(default='null', null=True, blank=True)
+    status = models.NullBooleanField(default='None', null=True, blank=True)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, default="1")
+    time = models.ForeignKey(Times, on_delete=models.CASCADE, default="1")
+    week = models.ForeignKey(Weeks, on_delete=models.CASCADE, default="1")
+
 
 class AppliedCourse_Pos_Ti(models.Model):
-    id = models.AutoField(primary_key=True)
-    a_classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
-    a_time = models.ForeignKey(Times, on_delete=models.CASCADE)
-    a_week = models.ForeignKey(Weeks, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    time = models.ForeignKey(Times, on_delete=models.CASCADE)
+    week = models.ForeignKey(Weeks, on_delete=models.CASCADE)
     applied_course = models.ForeignKey(AppliedCourse, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ("a_classroom", "a_time", "a_week", "applied_course")
+        unique_together = ("classroom", "time", "week", "applied_course")
 
 
 class Teacher(models.Model):

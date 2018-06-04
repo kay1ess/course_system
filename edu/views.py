@@ -13,7 +13,7 @@ def index(request):
 
 def pub_course(request):
     if request.method == "GET":
-        courses = NewCourse.objects.all()
+        courses = NewCourse.objects.all().order_by('-ctime')
         pub_form = PubForm()
         return render(request,"pubCourse.html", {"pub_form":pub_form, "courses":courses})
     if request.method == "POST":
@@ -38,7 +38,7 @@ def pub_course(request):
             return  HttpResponse(json.dumps(ret))
 
 def pub_news(request):
-    news_list = News.objects.all()
+    news_list = News.objects.all().order_by("-c_time")
     return render(request, "pubNews.html", {"news_list": news_list})
 
 def edit_news(request):

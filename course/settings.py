@@ -106,6 +106,14 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
+
+    {
+        'NAME':'course.my_pwd.MyValidtor',
+        'OPTIONS':{
+            'upper_num':1
+        }
+    },
 ]
 
 

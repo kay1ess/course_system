@@ -10,7 +10,6 @@
             float: right;
             margin: 10px;
             margin-right: 0px;
-
         }
 
         .table-div {
@@ -26,7 +25,11 @@
             text-align: center;
             color: red;
         }
-    </style>
+        #err_msg {
+            color: red;
+            font-size: 20px;
+        }
+        </style>
 {% endblock %}
 
 {% block body %}
@@ -65,9 +68,12 @@
                                 <td>{{ cour.ctime|date:'Y年/M/j日,H时' }}</td>
                                 {% if cour.status == None %}
                                     <td>已发布</td>
+                                    {% elif cour.status == True %}
+                                    <td style="color: forestgreen">已被申请待审批</td>
                                 {% endif %}
                             </tr>
                         {% endfor %}
+
                     {% endif %}
 
 

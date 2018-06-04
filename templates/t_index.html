@@ -1,0 +1,26 @@
+{% extends "t_base.html" %}
+{% block title %}
+首页
+{% endblock %}
+
+{% block  head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+    <div class="content">
+        <h1>this is for news</h1>
+        {% for c in today_course %}
+            <h3>{{ c.name }}</h3>
+        {% endfor %}
+    </div>
+    </div>
+    <script>
+        $("#nav1").addClass("active");
+    </script>
+{% endblock %}

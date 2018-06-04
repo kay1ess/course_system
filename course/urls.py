@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from edu import views as e_views
 from extra_app.DjangoUeditor import urls as DjangoUeditor_urls
-
+from teacher import views as t_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +28,12 @@ urlpatterns = [
     path('e/pubCourse.html', e_views.pub_course),
     path('e/pubNews.html', e_views.pub_news),
     path('e/newNews.html', e_views.edit_news),
+
+    path('t/index.html', t_views.index),
+    path('t/appCourse.html', t_views.app_course),
+    path('t/appliedCourse.html', t_views.applied_course),
+    path('t/teachPlan.html', t_views.teach_plan),
+    path('t/info.html', t_views.info),
+
+
 ]
