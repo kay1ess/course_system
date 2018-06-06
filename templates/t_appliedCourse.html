@@ -8,11 +8,7 @@
         .content {
             min-height: 500px;
         }
-        .fm-title {
-            float: right;
-            margin: 10px;
-            margin-right: 0px;
-        }
+
 
         #appfm p {
             text-align: center;
@@ -51,7 +47,7 @@
                 <tbody>
                     {% if applied_course_list %}
                         {% for c in applied_course_list %}
-                    <tr>
+                    <tr class="trid" cstatus="{{ c.status }}">
                         <td>{{ forloop.counter }}</td>
                         <td>{{ c.no }}</td>
                         <td>{{ c.name }}</td>
@@ -86,9 +82,20 @@
     <script>
         $("#nav3").addClass("active");
         $(function () {
-            addEvent();
+            ChangeTableEvent();
         })
+        function ChangeTableEvent() {
+            var list = $(".trid")
 
+            for(var i=0;i<list.length;i++) {
+                if(list.eq(i).attr("cstatus")=="True"){
+                    $(".trid").eq(i).addClass("success");
+                }else if(list.eq(i).attr("cstatus")=="False"){
+                    $(".trid").eq(i).addClass("danger");
+                }
+            }
+
+        }
 
     </script>
 {% endblock %}

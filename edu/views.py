@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from edu.form import PubForm, NewsForm
 from edu.models import NewCourse, News
-
+from teacher.models import AppliedCourse
 
 # Create your views here.
 
@@ -61,3 +61,27 @@ def edit_news(request):
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+def approve(request):
+    app_list = AppliedCourse.objects.filter(status='None')
+    return render(request, "e_approve.html", {"app_list":app_list})
+
+def pass_(request):
+    ret = {"status":True,"msg":"该课程审批通过！"}
+    try:
+        id = request.GET.get('appId')
+        AppliedCourse.objects.filter(id=id).update(status=True)
+
+    except Exception:
+        ret["status"] = False
+        ret["msg"] = "数据库操作失败，请联系系统管理员"
+    return HttpResponse(json.dumps(ret))
+
+def nopass_(request):
+    ret = {"status":True,"msg":"该课程审批被拒绝！"}
+    try:
+        id = request.GET.get('appId')
+        AppliedCourse.objects.filter(id=id).update(status=False)
+    except Exception:
+        ret["status"] = False
+        ret["msg"] = "数据库操作失败，请联系系统管理员"
+    return HttpResponse(json.dumps(ret))

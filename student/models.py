@@ -9,7 +9,7 @@ from teacher.models import Teacher
 
 # Create your models here.
 
-class CoursePool(models.Model):
+class Selected(models.Model):
     no = models.CharField(max_length=8, unique=True)
     name = models.CharField(max_length=30)
     college = models.ForeignKey(College, on_delete=models.CASCADE)
@@ -18,7 +18,6 @@ class CoursePool(models.Model):
     a_week = models.ForeignKey(Weeks, on_delete=models.SET_NULL, null=True)
     a_time = models.ForeignKey(Times, on_delete=models.SET_NULL, null=True)
     credit = models.DecimalField(max_digits=2, decimal_places=1)
-
 
 class Student(models.Model):
     no = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -30,4 +29,14 @@ class Student(models.Model):
     grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     college = models.ForeignKey(College, on_delete=models.SET_NULL, null=True)
     birth = models.CharField(max_length=10)
-    selected_course = models.ManyToManyField(CoursePool)
+
+class StuSelected(models.Model):
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    time = models.ForeignKey(Times, on_delete=models.CASCADE)
+    week = models.ForeignKey(Weeks, on_delete=models.CASCADE)
+    select_course = models.ForeignKey(Selected, on_delete=models.CASCADE)
+    student = models.ForeignKey("Student", on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        unique_together = ("classroom", "time", "week", "student")
+

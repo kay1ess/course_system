@@ -38,9 +38,9 @@ class AppliedCourse_Pos_Ti(models.Model):
     time = models.ForeignKey(Times, on_delete=models.CASCADE)
     week = models.ForeignKey(Weeks, on_delete=models.CASCADE)
     applied_course = models.ForeignKey(AppliedCourse, on_delete=models.CASCADE)
-
+    teacher = models.ForeignKey("Teacher", on_delete=models.SET_NULL, null=True)
     class Meta:
-        unique_together = ("classroom", "time", "week", "applied_course")
+        unique_together = ("classroom", "time", "week", "teacher")
 
 
 class Teacher(models.Model):

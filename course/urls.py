@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from edu import views as e_views
 from extra_app.DjangoUeditor import urls as DjangoUeditor_urls
 from teacher import views as t_views
@@ -28,6 +28,10 @@ urlpatterns = [
     path('e/pubCourse.html', e_views.pub_course),
     path('e/pubNews.html', e_views.pub_news),
     path('e/newNews.html', e_views.edit_news),
+    path('e/approve.html', e_views.approve),
+
+    re_path(r'e/Pass', e_views.pass_),
+    re_path(r'e/noPass', e_views.nopass_),
 
     path('t/index.html', t_views.index),
     path('t/appCourse.html', t_views.app_course),

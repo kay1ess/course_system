@@ -1,0 +1,112 @@
+{% extends "edu_base.html" %}
+{% block title %}
+教务首页
+{% endblock %}
+
+{% block head %}
+<style>
+
+    .content {
+        min-height: 480px;
+    }
+    .container {
+        padding-top: 10px;
+    }
+
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="content">
+            <div class="table-div">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>授课学院</th>
+                        <th>申请教师</th>
+                        <th>上课时间</th>
+                        <th>上课地点</th>
+                        <th>学分</th>
+                        <th>申请时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if app_list %}
+                        {% for a in app_list %}
+                            <tr clsId="{{ a.id }}">
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ a.no }}</td>
+                                <td>{{ a.name }}</td>
+                                <td>{{ a.college.name }}</td>
+                                <td>{{ a.teacher.name }}</td>
+                                <td>{{ a.time.duration }},{{ a.week.name }}</td>
+                                <td>{{ a.classroom.name }}</td>
+                                <td>{{ a.credit }}</td>
+                                <td>{{ a.applied_time }}</td>
+                                <td>
+                                    <button type="button" class="bnt btn-success" onclick="Pass(this)">通过</button>
+                                    <button type="button" class="bnt btn-danger" onclick="noPass(this)">拒绝</button>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+    </div>
+
+        </div>
+
+
+    <script>
+        $("#nav4").addClass("active");
+        function Pass(th) {
+            clsId = $(th).parent().parent().attr('clsId')
+            $.ajax({
+                url: 'Pass',
+                data: {"appId":clsId},
+                dataType:"JSON",
+                type:"GET",
+                success:function (arg) {
+                    if(arg.status){
+                        alert(arg.msg);
+                        $('[clsId="'+clsId+'"]').remove()
+                    }else {
+                        alert(arg.msg);
+                    }
+                }
+
+            })
+        }
+        function noPass(th) {
+            clsId = $(th).parent().parent().attr('clsId')
+            $.ajax({
+                url: 'noPass',
+                data: {"appId":clsId},
+                dataType:"JSON",
+                type:"GET",
+                success:function (arg) {
+                    if(arg.status){
+                        alert(arg.msg);
+                        $('[clsId="'+clsId+'"]').remove()
+                    }else {
+                        alert(arg.msg);
+                    }
+                }
+
+            })
+        }
+
+    </script>
+{% endblock %}
