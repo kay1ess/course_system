@@ -3,8 +3,10 @@ import json
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
-from teacher.models import AppliedCourse
+from teacher.models import AppliedCourse, Weeks
 from student.models import Selected
+from teacher.models import Times
+
 # Create your views here.
 def index(request):
     return render(request, "s_index.html")
@@ -18,7 +20,10 @@ def selected(request):
     return render(request, "s_selected.html", {"courses":courses})
 
 def courses(request):
-    return render(request, "s_courses.html")
+    times = Times.objects.all()
+    cour = Selected.objects.all()
+    weeks = Weeks.objects.all()
+    return render(request, "s_courses.html", {"times":times, "weeks":weeks, "cour":cour})
 
 def info(request):
     pass

@@ -1,0 +1,102 @@
+{% extends "s_base.html" %}
+
+{% block title %}
+    选课
+{% endblock %}
+
+{% block head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+        .table-div {
+            padding-top: 10px;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            empty-cells: show;
+        }
+        caption {
+            font-size: 40px;
+            text-align: center;
+        }
+        th {
+            text-align: center;
+            width: 180px;
+        }
+        td {
+            width: 200px;
+            height: 60px;
+            text-align: center;
+            word-break: break-all;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="content">
+            <div class="table-div">
+            <table class="table table-bordered">
+                <caption align="top">课程表</caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>周一</th>
+                        <th>周二</th>
+                        <th>周三</th>
+                        <th>周四</th>
+                        <th>周五</th>
+                        <th>周六</th>
+                        <th>周日</th>
+                    </tr>
+                </thead>
+                <tbody id="tb">
+                            {% for t in times %}
+                            <tr>
+                            <th>{{ t.duration }}</th>
+
+                            <td>{% for c in cour %}{% if c.a_week_id == 1 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.a_week_id == 2 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.a_week_id == 3 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.a_week_id == 4 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.a_week_id == 5 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.a_week_id == 6 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.a_week_id == 7 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+
+
+                            </tr>
+                            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+<script>
+        $("#nav4").addClass("active");
+        $(function () {
+            BkEvent();
+        })
+
+        function randomm(arry) {
+            return arry[Math.floor(Math.random()*arry.length)]
+        }
+
+        function BkEvent() {
+            var clss = ["success", "danger", "warning", "info"];
+            var tds = $("td")
+            for(var t=0;t<tds.length;t++){
+                var td = tds.eq(t).html()
+                if( td != ''){
+                    tds.eq(t).addClass(randomm(clss));
+                }
+            }
+
+        }
+</script>
+
+{% endblock %}
