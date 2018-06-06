@@ -1,0 +1,109 @@
+{% extends "s_base.html" %}
+
+{% block title %}
+    选课
+{% endblock %}
+
+{% block head %}
+    <style>
+        .content {
+            min-height: 500px;
+        }
+        .table-div {
+            padding-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="content">
+            <div class="table-div">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课程号</th>
+                        <th>课程名</th>
+                        <th>授课学院</th>
+                        <th>任课教师</th>
+                        <th>学分</th>
+                        <th>上课地点</th>
+                        <th>上课时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tb">
+                    {% if courses %}
+                        {% for cour in courses %}
+                            <tr
+                                no="{{ cour.no }}"
+                                name="{{ cour.name }}"
+                                college="{{ cour.college_id }}"
+                                teacher="{{ cour.teacher_id }}"
+                                credit="{{ cour.credit }}"
+                                classroom="{{ cour.classroom_id }}"
+                                time="{{ cour.time_id }}"
+                                week="{{ cour.week_id }}"
+
+                            >
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ cour.no }}</td>
+                                <td>{{ cour.name }}</td>
+                                <td>{{ cour.college.name }}</td>
+                                <td>{{ cour.teacher.name }}</td>
+                                <td>{{ cour.credit }}</td>
+                                <td>{{ cour.classroom.name }}</td>
+                                <td>{{ cour.time.duration }},{{ cour.week.name }}</td>
+                                <td>
+                                <button type="button" class="btn btn-success" onclick="Choose(this);">选课</button>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                        <td colspan="7"><h1 style="color: silver;text-align: center">目前暂无新课程发布</h1></td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    <script>
+        $("#nav2").addClass("active");
+        function Choose(th) {
+            var no = $(th).parent().parent().attr('no');
+            var name = $(th).parent().parent().attr('name');
+            var college = $(th).parent().parent().attr('college');
+            var teacher = $(th).parent().parent().attr('teacher');
+            var credit = $(th).parent().parent().attr('credit');
+            var classroom = $(th).parent().parent().attr('classroom');
+            var time = $(th).parent().parent().attr('time');
+            var week = $(th).parent().parent().attr('week');
+
+            $.ajaxSetup({
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+            });
+            $.ajax({
+                url: 'choosed',
+                data: {"no":no,"college":college,"name":name,"teacher":teacher,"credit":credit,
+                        "classroom":classroom, "time":time, "week":week
+                        },
+                dataType:"JSON",
+                type:"POST",
+                success:function (arg) {
+                    if(arg.status){
+                        alert(arg.msg);
+                        $('[no="'+no+'"]').remove()
+                    }else {
+                        alert(arg.msg);
+                    }
+                }
+
+            })
+        }
+    </script>
+{% endblock %}

@@ -31,6 +31,7 @@ class AppliedCourse(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, default="1")
     time = models.ForeignKey(Times, on_delete=models.CASCADE, default="1")
     week = models.ForeignKey(Weeks, on_delete=models.CASCADE, default="1")
+    choose = models.NullBooleanField(default='None', null=True)
 
 
 class AppliedCourse_Pos_Ti(models.Model):

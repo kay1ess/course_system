@@ -72,7 +72,7 @@
     <script>
         $("#nav4").addClass("active");
         function Pass(th) {
-            clsId = $(th).parent().parent().attr('clsId')
+            var clsId = $(th).parent().parent().attr('clsId')
             $.ajax({
                 url: 'Pass',
                 data: {"appId":clsId},

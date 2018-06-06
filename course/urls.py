@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 from edu import views as e_views
 from extra_app.DjangoUeditor import urls as DjangoUeditor_urls
 from teacher import views as t_views
+from student import views as s_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,5 +40,10 @@ urlpatterns = [
     path('t/teachPlan.html', t_views.teach_plan),
     path('t/info.html', t_views.info),
 
+    path('s/index.html', s_views.index),
+    path('s/select.html', s_views.select),
+    path('s/selected.html', s_views.selected),
+    path('s/courses.html', s_views.courses),
 
+    path('s/choosed', s_views.choosed),
 ]
