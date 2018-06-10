@@ -70,6 +70,9 @@
                                     <td>已发布</td>
                                     {% elif cour.status == True %}
                                     <td style="color: forestgreen">已被申请待审批</td>
+                                    {% else %}
+                                    <td style="color: palevioletred">已被审批</td>
+
                                 {% endif %}
                             </tr>
                         {% endfor %}

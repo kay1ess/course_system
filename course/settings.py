@@ -99,21 +99,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length':6
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 
 
-    {
-        'NAME':'course.my_pwd.MyValidtor',
-        'OPTIONS':{
-            'upper_num':1
-        }
-    },
+    # {
+    #     'NAME':'course.my_pwd.MyValidtor',
+    #     'OPTIONS':{
+    #         'upper_num':1
+    #     }
+    # },
 ]
 
 
@@ -144,3 +147,4 @@ MEDIA_ROOT = (
     os.path.join(BASE_DIR, 'media')
 )
 
+LOGIN_URL = '/login.html'

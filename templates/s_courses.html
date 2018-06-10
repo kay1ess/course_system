@@ -1,7 +1,7 @@
 {% extends "s_base.html" %}
 
 {% block title %}
-    选课
+    课程表
 {% endblock %}
 
 {% block head %}
@@ -33,6 +33,7 @@
             word-break: break-all;
         }
     </style>
+
 {% endblock %}
 
 {% block body %}
@@ -40,7 +41,7 @@
     <div class="container">
         <div class="content">
             <div class="table-div">
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="tb">
                 <caption align="top">课程表</caption>
                 <thead>
                     <tr>
@@ -54,7 +55,7 @@
                         <th>周日</th>
                     </tr>
                 </thead>
-                <tbody id="tb">
+                <tbody>
                             {% for t in times %}
                             <tr>
                             <th>{{ t.duration }}</th>
@@ -72,6 +73,9 @@
                             {% endfor %}
                 </tbody>
             </table>
+
+            <div>
+            </div>
         </div>
     </div>
     </div>
@@ -80,7 +84,7 @@
         $("#nav4").addClass("active");
         $(function () {
             BkEvent();
-        })
+        });
 
         function randomm(arry) {
             return arry[Math.floor(Math.random()*arry.length)]
@@ -88,15 +92,16 @@
 
         function BkEvent() {
             var clss = ["success", "danger", "warning", "info"];
-            var tds = $("td")
+            var tds = $("td");
             for(var t=0;t<tds.length;t++){
-                var td = tds.eq(t).html()
+                var td = tds.eq(t).html();
                 if( td != ''){
                     tds.eq(t).addClass(randomm(clss));
                 }
             }
 
         }
+
 </script>
 
 {% endblock %}

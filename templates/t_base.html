@@ -25,6 +25,7 @@
             font-family: "HanziPen SC";
             margin: 40px;
         }
+
         .head-nav span {
             float: right;
             font-size: 25px;
@@ -71,6 +72,10 @@
             text-decoration-line: none;
             color: #5bc0de;
         }
+        ul a {
+            float: right;
+            padding: 5px 10px;
+        }
     </style>
     {% block head %}
     {% endblock %}
@@ -81,7 +86,7 @@
         <div class="container">
             {% block eduName %}
             {% endblock %}
-            <p id="greet"></p>
+            <p>{{ user.username }} <text id="greet"></text></p>
             <span id="bjtime"></span>
         </div>
     </div>
@@ -92,6 +97,7 @@
             <li id="nav3" ><a href="/t/appliedCourse.html">已申请课程</a></li>
             <li id="nav4" ><a href="/t/teachPlan.html">教学表</a></li>
             <li id="nav5" ><a href="#">个人中心</a></li>
+            <a href="{% url "logout_" %}"><button type="button" class="btn-warning btn">注销</button></a>
         </ul>
     </div>
     {% block body %}

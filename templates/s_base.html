@@ -71,6 +71,10 @@
             text-decoration-line: none;
             color: #5bc0de;
         }
+        ul a {
+            float: right;
+            padding: 5px 10px;
+        }
     </style>
     {% block head %}
     {% endblock %}
@@ -92,6 +96,9 @@
             <li id="nav3" ><a href="/s/selected.html">已选课程</a></li>
             <li id="nav4" ><a href="/s/courses.html">课程表</a></li>
             <li id="nav5" ><a href="#">个人中心</a></li>
+            <li><a href="{% url "change_pwd" %}">更改密码</a> </li>
+            <a href="{% url "logout_" %}"><button type="button" class="btn-warning btn">注销</button></a>
+
         </ul>
     </div>
     {% block body %}

@@ -46,4 +46,9 @@ urlpatterns = [
     path('s/courses.html', s_views.courses),
 
     path('s/choosed', s_views.choosed),
+
+    path('login.html', s_views.login_),
+    path("logout.html", s_views.logout_, name="logout_"),
+
+    path("change_password.html", s_views.change_pwd, name="change_pwd"),
 ]

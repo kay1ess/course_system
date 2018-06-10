@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url("/static/img/bkg.jpg");
+
+            opacity: 1.0;
+            width: 100%;
+            height: 100%;
+        }
+        form {
+            width: 400px;
+            height: 200px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -250px;
+            margin-left: -200px;
+        }
+        h2 {
+            text-align: center;
+        }
+        button {
+            width: 100%;
+
+        }
+        li {
+            float: left;
+            margin-right: 20px;
+            list-style: none;
+        }
+        #errMsg1 {
+            display: none;
+            width: 100%;
+            height: 40px;
+            margin: 10px;
+            padding: 10px;
+
+        }
+        #errMsg2 {
+            display: none;
+            width: 100%;
+            height: 40px;
+            margin: 10px;
+            padding: 10px;
+
+        }
+        #errMsg3 {
+            display: none;
+            width: 100%;
+            height: 40px;
+            margin: 10px;
+            padding: 10px;
+
+        }
+        #errMsg4 {
+            display: none;
+            width: 100%;
+            height: 40px;
+            margin: 10px;
+            padding: 10px;
+
+        }
+        #errMsg5 {
+            display: none;
+            width: 100%;
+            height: 40px;
+            margin: 10px;
+            padding: 10px;
+
+        }
+    </style>
+
+</head>
+<body>
+    <div class="bk">
+
+            <form method="post" id="fm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <h2>欢迎登陆课程在线系统</>
+                </div>
+                <div class="form-group">
+                    <label>输入ID</label>
+                    {{ obj.username }}
+                    <div class="alert alert-danger" id="errMsg1"></div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">密码</label>
+                    {{ obj.password }}
+                    <small class="text-muted">{{ obj.password.help_text }}</small>
+                    <div class="alert alert-danger" id="errMsg2"></div>
+
+                </div>
+
+                <div class="form-group">
+                    <h5>请选择登录身份：</h5>
+
+                    {{ obj.group_id }}
+                    <br />
+                    <div class="alert alert-danger" id="errMsg3"></div>
+
+
+                </div>
+                <div class="form-group">
+                    <div class="alert alert-danger" id="errMsg4"></div>
+                    <div class="alert alert-danger" id="errMsg5"></div>
+                <button type="button" class="btn btn-primary" onclick="SubEvent();">登录</button>
+                </div>
+                <a class="text-muted"><a href="#"> 忘记密码？</a>
+            </form>
+        </div>
+
+<script>
+    function SubEvent() {
+        $.ajax({
+            url: "login.html",
+            type: "POST",
+            data: $("#fm").serialize(),
+            dataType: "JSON",
+            success:function (arg) {
+                if(arg.status=="success"){
+                    if(arg.msg==0){
+                        alert("首次登陆请修改你的密码")
+                        window.location.href = "change_password.html"
+                    }
+                    else if(arg.msg==1){
+                        window.location.href = "/s/index.html"
+                    }else if(arg.msg==2) {
+                        window.location.href = "/t/index.html"
+                    }else {
+                        window.location.href = "/e/index.html"
+                    }
+                }else if(arg.status=="no_success"){
+                    $("#errMsg4").html(arg.msg);
+                    $("#errMsg4").css("display", "block");
+                }else if(arg.status == "up_failed"){
+                     $("#errMsg5").html(arg.msg);
+                    $("#errMsg5").css("display", "block");
+                }
+                else{
+                    if(arg.msg.username){
+                        $("#errMsg1").html(arg.msg.username);
+                        $("#errMsg1").css("display", "block");
+                    }
+                    if(arg.msg.password){
+                        $("#errMsg2").html(arg.msg.password);
+                        $("#errMsg2").css("display", "block");
+                    }
+                    if(arg.msg.group_id){
+                        $("#errMsg3").html(arg.msg.group_id);
+                        $("#errMsg3").css("display", "block");
+                    }
+
+
+                }
+            }
+        })
+
+    }
+
+
+</script>
+
+</body>
+</html>

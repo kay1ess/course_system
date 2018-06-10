@@ -70,6 +70,7 @@ def pass_(request):
     try:
         id = request.GET.get('appId')
         AppliedCourse.objects.filter(id=id).update(status=True)
+        NewCourse.objects.filter(id=id).update(status=False)
 
     except Exception:
         ret["status"] = False

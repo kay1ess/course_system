@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from edu.models import NewCourse
@@ -10,7 +11,7 @@ from edu.models import NewCourse
 import datetime
 # Create your views here.
 
-
+@login_required
 def index(request):
     today_ = datetime.datetime.now().weekday()+1
     today_courses = AppliedCourse.objects.filter(week_id=1)
@@ -59,7 +60,9 @@ def applied_course(request):
     return render(request, "t_appliedCourse.html", {"applied_course_list":applied_course_list})
 
 def teach_plan(request):
-    pass
+    weeks = Weeks.objects.all()
+    times = Times.objects.all()
+    return render(request, "t_teachPlan.html", locals())
 
 def info(request):
     pass
