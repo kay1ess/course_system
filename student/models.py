@@ -42,5 +42,9 @@ class StuSelected(models.Model):
 
 
     class Meta:
-        unique_together = ("classroom", "time", "week", "student")
+        unique_together = ("time", "week", "student")
 
+class PwdStatus(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    pwd_status = models.BooleanField(default=False)
+    last_mtime = models.DateTimeField(auto_now=True)

@@ -12,7 +12,7 @@ class PubForm(forms.Form):
         validators=[RegexValidator(r'\d{8}', "请输入数字")],
         error_messages={
             'required': '该字段必须要输入',
-            'invalid': '输入不符合格式要求'
+            'invalid': '课程号为8位数字'
         }
         )
     name = fields.CharField(

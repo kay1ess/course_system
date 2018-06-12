@@ -4,3 +4,4 @@ from teacher import models
 admin.site.register(models.Weeks)
 admin.site.register(models.Times)
 admin.site.register(models.Classroom)
+admin.site.register(models.Teacher)

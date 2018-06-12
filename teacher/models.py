@@ -1,9 +1,12 @@
+
 from django.contrib.auth.models import User
 from django.db import models
 from edu.models import Position
 from edu.models import College
 
 # Create your models here.
+
+
 
 class Weeks(models.Model):
     name = models.CharField(max_length=7)
@@ -33,6 +36,9 @@ class AppliedCourse(models.Model):
     week = models.ForeignKey(Weeks, on_delete=models.CASCADE, default="1")
     choose = models.NullBooleanField(default='None', null=True)
 
+    # 设计打败 要建立外键 来确定是否被选上 每个学生独立不受影响
+    # 设计不够独立
+
 
 class AppliedCourse_Pos_Ti(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
@@ -41,7 +47,7 @@ class AppliedCourse_Pos_Ti(models.Model):
     applied_course = models.ForeignKey(AppliedCourse, on_delete=models.CASCADE)
     teacher = models.ForeignKey("Teacher", on_delete=models.SET_NULL, null=True)
     class Meta:
-        unique_together = ("classroom", "time", "week", "teacher")
+        unique_together = ("classroom", "time", "week")
 
 
 class Teacher(models.Model):

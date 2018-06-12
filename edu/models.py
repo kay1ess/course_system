@@ -33,6 +33,8 @@ class EduAdmin(models.Model):
     tel = models.CharField(max_length=11)
     email = models.EmailField()
     birth = models.CharField(max_length=10)
+    def __str__(self):
+        return self.name
 
 class News(models.Model):
     title = models.CharField(max_length=40, null=False)
@@ -41,6 +43,7 @@ class News(models.Model):
                            settings={}, command=None, verbose_name="正文")
     c_time = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(EduAdmin, on_delete=models.SET_NULL, null=True)
+    m_time = models.DateTimeField(auto_now=True)
 
 class NewCourse(models.Model):
     no = models.CharField(max_length=8, unique=True)

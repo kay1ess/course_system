@@ -172,8 +172,9 @@
 
                         success: function (arg) {
                             if(arg.status) {
+                                console.log("okokok")
+                                alert("申请成功~~~");
                                 $("#addModal").modal("hide");
-                                alert("申请成功~~~")
                                 window.location.reload();
                         }else{
                                 $("#err_msg").html(arg.msg);

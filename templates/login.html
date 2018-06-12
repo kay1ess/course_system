@@ -118,6 +118,10 @@
         </div>
 
 <script>
+    $.ajaxSetup({
+　　data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+
     function SubEvent() {
         $.ajax({
             url: "login.html",
