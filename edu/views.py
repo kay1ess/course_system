@@ -19,6 +19,7 @@ def check_group3(user):
 @login_required
 @user_passes_test(check_group3)
 def index(request):
+    
     return render(request, "edu_index.html")
 
 @login_required

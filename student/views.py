@@ -74,8 +74,6 @@ def choosed(request):
 
             id = Selected.objects.last().id
 
-            print(id)
-
             StuSelected.objects.create(
                 classroom_id=request.POST.get("classroom"),
                 select_course_id=id,
@@ -90,9 +88,12 @@ def choosed(request):
                 choose=True
             )
 
-
         except Exception as e:
-            print(e)
+            if str(e) == "UNIQUE constraint failed: student_stuselected.time_id, student_stuselected.week_id, student_stuselected.student_id":
+                ret["status"] = False
+                ret["msg"] = "该时间段发生冲突，请在空余的时间进行选择"
+                Selected.objects.last().delete()
+                return HttpResponse(json.dumps(ret))
             ret["status"] = False
             ret["msg"] = "数据库操作失败，请联系系统管理员"
     return HttpResponse(json.dumps(ret))
