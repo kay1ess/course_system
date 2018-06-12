@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from teacher.models import AppliedCourse, Weeks
-from student.models import Selected, PwdStatus
+from student.models import PwdStatus, FinalSelect
 from teacher.models import Times
 from student.models import StuSelected
 from student.models import Student
@@ -27,21 +27,23 @@ def index(request):
 @login_required
 @user_passes_test(check_group1)
 def select(request):
-    courses = AppliedCourse.objects.filter(~Q(choose=True),status=True)
+    s_id = Student.objects.filter(no__username=request.user).first().id
+    courses = StuSelected.objects.filter(~Q(student_id=s_id))
     return render(request, "s_select.html", {"courses":courses})
 
 @login_required
 @user_passes_test(check_group1)
 def selected(request):
     id = Student.objects.filter(no__username=request.user).first().id
-    courses = Selected.objects.filter(student_id=id).order_by("ctime")
+    courses = FinalSelect.objects.filter(student_id=id)
     return render(request, "s_selected.html", {"courses":courses})
+
 
 @login_required
 @user_passes_test(check_group1)
 def courses(request):
     id = Student.objects.filter(no__username=request.user).first().id
-    cour = Selected.objects.filter(student_id=id)
+    cour = FinalSelect.objects.filter(student_id=id)
     times = Times.objects.all()
     weeks = Weeks.objects.all()
     return render(request, "s_courses.html", {"times":times, "weeks":weeks, "cour":cour})
@@ -57,43 +59,39 @@ def choosed(request):
     if request.method == "POST":
         ret = {"status": True, "msg": "选课成功！"}
         s_id = Student.objects.filter(no__username=request.user).first().id
-
         try:
 
-            Selected.objects.create(
+            StuSelected.objects.filter(no=request.POST.get("no")).update(
+                student_id=s_id
+            )
+            FinalSelect.objects.create(
                 no=request.POST.get("no"),
                 name=request.POST.get("name"),
                 college_id=request.POST.get("college"),
-                student_id=s_id,
+                time_id=request.POST.get("time"),
+                week_id=request.POST.get("week"),
+                select_course_id=request.POST.get("cid"),
                 teacher_id=request.POST.get("teacher"),
                 credit=request.POST.get("credit"),
-                a_time_id=request.POST.get("time"),
-                a_week_id=request.POST.get("week"),
-                classroom_id=request.POST.get("classroom")
-            )
-
-            id = Selected.objects.last().id
-
-            StuSelected.objects.create(
                 classroom_id=request.POST.get("classroom"),
-                select_course_id=id,
-                student_id=s_id,
-                teacher_id=request.POST.get("teacher"),
-                time_id=request.POST.get("time"),
-                week_id=request.POST.get("week")
-
+                student_id=s_id
             )
-
-            AppliedCourse.objects.filter(no=request.POST.get("no")).update(
-                choose=True
-            )
+            AppliedCourse.objects.filter(no=request.POST.get("no")).update(choose=True)
 
         except Exception as e:
-            if str(e) == "UNIQUE constraint failed: student_stuselected.time_id, student_stuselected.week_id, student_stuselected.student_id":
+            if str(e) == "UNIQUE constraint failed: student_finalselect.week_id, student_finalselect.student_id, student_finalselect.time_id":
+                StuSelected.objects.filter(no=request.POST.get("no")).update(
+                    student_id=None
+                )
+                AppliedCourse.objects.filter(no=request.POST.get("no")).update(choose=None)
                 ret["status"] = False
                 ret["msg"] = "该时间段发生冲突，请在空余的时间进行选择"
-                Selected.objects.last().delete()
                 return HttpResponse(json.dumps(ret))
+            print(str(e))
+            StuSelected.objects.filter(no=request.POST.get("no")).update(
+                student_id=None
+            )
+            AppliedCourse.objects.filter(no=request.POST.get("no")).update(choose=None)
             ret["status"] = False
             ret["msg"] = "数据库操作失败，请联系系统管理员"
     return HttpResponse(json.dumps(ret))

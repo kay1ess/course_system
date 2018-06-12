@@ -38,7 +38,8 @@ class AppliedCourse(models.Model):
 
     # 设计打败 要建立外键 来确定是否被选上 每个学生独立不受影响
     # 设计不够独立
-
+    def __str__(self):
+        self.name
 
 class AppliedCourse_Pos_Ti(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)

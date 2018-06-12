@@ -38,6 +38,7 @@
                     {% if courses %}
                         {% for cour in courses %}
                             <tr
+                                cid="{{ cour.id }}"
                                 no="{{ cour.no }}"
                                 name="{{ cour.name }}"
                                 college="{{ cour.college_id }}"
@@ -75,6 +76,7 @@
     <script>
         $("#nav2").addClass("active");
         function Choose(th) {
+            var cid = $(th).parent().parent().attr('cid');
             var no = $(th).parent().parent().attr('no');
             var name = $(th).parent().parent().attr('name');
             var college = $(th).parent().parent().attr('college');
@@ -89,7 +91,7 @@
             });
             $.ajax({
                 url: 'choosed',
-                data: {"no":no,"college":college,"name":name,"teacher":teacher,"credit":credit,
+                data: {"cid":cid,"no":no,"college":college,"name":name,"teacher":teacher,"credit":credit,
                         "classroom":classroom, "time":time, "week":week
                         },
                 dataType:"JSON",

@@ -60,13 +60,13 @@
                             <tr>
                             <th>{{ t.duration }}</th>
 
-                            <td>{% for c in cour %}{% if c.a_week_id == 1 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
-                            <td>{% for c in cour %}{% if c.a_week_id == 2 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
-                            <td>{% for c in cour %}{% if c.a_week_id == 3 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
-                            <td>{% for c in cour %}{% if c.a_week_id == 4 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
-                            <td>{% for c in cour %}{% if c.a_week_id == 5 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
-                            <td>{% for c in cour %}{% if c.a_week_id == 6 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
-                            <td>{% for c in cour %}{% if c.a_week_id == 7 and c.a_time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.week_id == 1 and c.time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.week_id == 2 and c.time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.week_id == 3 and c.time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.week_id == 4 and c.time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.week_id == 5 and c.time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.week_id == 6 and c.time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
+                            <td>{% for c in cour %}{% if c.week_id == 7 and c.time_id == t.id %}{{ c.name }},{{ c.classroom.name }}{% endif %}{% endfor %}</td>
 
 
                             </tr>

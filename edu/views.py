@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from edu.form import PubForm, NewsForm
 from edu.models import NewCourse, News, EduAdmin
+from student.models import StuSelected
 from teacher.models import AppliedCourse
 
 # Create your views here.
@@ -98,9 +99,22 @@ def pass_(request):
     try:
         id = request.GET.get('appId')
         AppliedCourse.objects.filter(id=id).update(status=True)
+        c = AppliedCourse.objects.filter(id=id).first()
+        StuSelected.objects.create(
+            no=c.no,
+            name=c.name,
+            college_id=c.college.id,
+            time_id=c.time.id,
+            week_id=c.week.id,
+            select_course_id=c.id,
+            teacher_id=c.teacher.id,
+            credit=c.credit,
+            classroom_id=c.classroom.id
+        )
         NewCourse.objects.filter(id=id).update(status=False)
 
-    except Exception:
+    except Exception as e:
+        print(str(e))
         ret["status"] = False
         ret["msg"] = "数据库操作失败，请联系系统管理员"
     return HttpResponse(json.dumps(ret))
