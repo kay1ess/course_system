@@ -20,8 +20,9 @@ def check_group3(user):
 @login_required
 @user_passes_test(check_group3)
 def index(request):
-    
-    return render(request, "edu_index.html")
+    app_list = AppliedCourse.objects.filter(status='None')
+    apps = app_list.count()
+    return render(request, "edu_index.html", locals())
 
 @login_required
 @user_passes_test(check_group3)
@@ -70,9 +71,11 @@ def edit_news(request):
 
         if obj.is_valid():
             try:
+                print(obj.cleaned_data)
                 News.objects.create(
                     title=obj.cleaned_data.get("title"),
                     content=obj.cleaned_data.get("content"),
+                    watchers=obj.cleaned_data.get("watchers"),
                     created_by_id=EduAdmin.objects.filter(no__username=request.user).first().id
                 )
 
@@ -97,9 +100,9 @@ def approve(request):
 def pass_(request):
     ret = {"status":True,"msg":"该课程审批通过！"}
     try:
-        id = request.GET.get('appId')
-        AppliedCourse.objects.filter(id=id).update(status=True)
-        c = AppliedCourse.objects.filter(id=id).first()
+        no = request.GET.get('clsNo')
+        AppliedCourse.objects.filter(np=no).update(status=True)
+        c = AppliedCourse.objects.filter(no=no).first()
         StuSelected.objects.create(
             no=c.no,
             name=c.name,
@@ -111,7 +114,7 @@ def pass_(request):
             credit=c.credit,
             classroom_id=c.classroom.id
         )
-        NewCourse.objects.filter(id=id).update(status=False)
+        NewCourse.objects.filter(no=no).update(status=False)
 
     except Exception as e:
         print(str(e))
@@ -124,9 +127,11 @@ def pass_(request):
 def nopass_(request):
     ret = {"status":True,"msg":"该课程审批被拒绝！"}
     try:
-        id = request.GET.get('appId')
-        AppliedCourse.objects.filter(id=id).update(status=False)
-    except Exception:
+        no = request.GET.get('clsNo')
+        AppliedCourse.objects.filter(no=no).update(status=False)
+        NewCourse.objects.filter(no=no).update(status=False)
+    except Exception as e:
+        print(str(e))
         ret["status"] = False
         ret["msg"] = "数据库操作失败，请联系系统管理员"
     return HttpResponse(json.dumps(ret))

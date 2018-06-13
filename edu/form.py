@@ -45,9 +45,17 @@ class PubForm(forms.Form):
 
 
 class NewsForm(forms.ModelForm):
+    choices = ((1, 'Everyone'),
+               (2, 'Teachers'),
+               (3, 'Students'),)
+    watchers = fields.CharField(
+            widget=widgets.Select(choices=choices),
+            label="可见对象",
+
+    )
     class Meta:
         model = News
-        fields = ["title","content",]
+        fields = ["title","content","watchers"]
 
 class LoginForm(forms.Form):
     username = fields.CharField(

@@ -1,3 +1,4 @@
+import datetime
 import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -5,6 +6,8 @@ from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+
+from edu.models import News
 from teacher.models import AppliedCourse, Weeks
 from student.models import PwdStatus, FinalSelect
 from teacher.models import Times
@@ -22,7 +25,11 @@ def check_group1(user):
 @login_required
 @user_passes_test(check_group1)
 def index(request):
-    return render(request, "s_index.html")
+    s_id = Student.objects.filter(no__username=request.user).first().id
+    today_ = datetime.datetime.now().weekday() + 1
+    today_courses = FinalSelect.objects.filter(student_id=s_id, week_id=today_)
+    news = News.objects.filter(Q(watchers='1') | Q(watchers='3')).order_by("-m_time", "-c_time")[:5]
+    return render(request, "s_index.html", locals())
 
 @login_required
 @user_passes_test(check_group1)

@@ -37,13 +37,16 @@ class EduAdmin(models.Model):
         return self.name
 
 class News(models.Model):
+
     title = models.CharField(max_length=40, null=False)
-    content = UEditorField(max_length=2000,width=1000 , height=300, toolbars='normal', imagePath='news_images/',
+    content = UEditorField(max_length=6000,width=1000 , height=300, toolbars='normal', imagePath='news_images/',
                            filePath='news_files/', upload_settings={'imageMaxSize': 120400000},
                            settings={}, command=None, verbose_name="正文")
     c_time = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(EduAdmin, on_delete=models.SET_NULL, null=True)
     m_time = models.DateTimeField(auto_now=True)
+    # 限制观众 1是所有人 2是学生 3是老师
+    watchers = models.CharField(max_length=1)
 
 class NewCourse(models.Model):
     no = models.CharField(max_length=8, unique=True)

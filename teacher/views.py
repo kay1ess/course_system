@@ -2,9 +2,10 @@ import json
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
-from edu.models import NewCourse
+from edu.models import NewCourse, News
 from teacher.form import AppForm
 from teacher.models import AppliedCourse, AppliedCourse_Pos_Ti, Teacher
 from teacher.models import Classroom,Weeks,Times
@@ -23,9 +24,11 @@ def check_group2(user):
 @login_required
 @user_passes_test(check_group2)
 def index(request):
+    t_id = Teacher.objects.filter(no__username=request.user).first().id
     today_ = datetime.datetime.now().weekday()+1
-    today_courses = AppliedCourse.objects.filter(week_id=1)
-    return render(request, "t_index.html", {"today_course":today_courses})
+    today_courses = AppliedCourse.objects.filter(choose=True, teacher_id=t_id, week_id=today_)
+    news = News.objects.filter(Q(watchers='1')|Q(watchers='2')).order_by("-m_time","-c_time")[:5]
+    return render(request, "t_index.html", {"today_course":today_courses, "news":news})
 
 @login_required
 @user_passes_test(check_group2)
@@ -94,6 +97,8 @@ def applied_course(request):
 @login_required
 @user_passes_test(check_group2)
 def teach_plan(request):
+    t_id = Teacher.objects.filter(no__username=request.user).first().id
+    cour = AppliedCourse.objects.filter(choose=True,teacher_id=t_id)
     weeks = Weeks.objects.all()
     times = Times.objects.all()
     return render(request, "t_teachPlan.html", locals())

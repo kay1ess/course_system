@@ -8,6 +8,7 @@
     <style>
         .content {
             min-height: 500px;
+            padding-top: 10px;
         }
     </style>
 {% endblock %}
@@ -16,6 +17,38 @@
 
     <div class="container">
         <div class="content">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                <h2 class="panel-title">今日课程</h2>
+                </div>
+                <div class="panel-body">
+                {% if today_courses %}
+                {% for c in today_courses %}
+                    <h4>{{ c.time.duration }} --- 《{{ c.name }}》 --- 地点：{{ c.classroom.name }} </h4>
+                {% endfor %}
+                {% else %}
+                    <h4>今日没有课程~~ Have A Nice Day~</h4>
+                {% endif %}
+                </div>
+            </div>
+
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                <h2 class="panel-title">最新通知</h2>
+                </div>
+                <div class="panel-body">
+                    {% for n in news %}
+                    <div class="jumbotron">
+                      <h2>{{ n.title }}</h2>
+                      <p>{{ n.content|striptags|slice:":80" }}...<a href="#">查看详情</a></p>
+                    <br>
+                    <b>最后修改日期: {{ n.m_time }}</b>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
 
         </div>
     </div>

@@ -8,6 +8,7 @@
 
     .content {
         min-height: 480px;
+        padding-top: 10px;
     }
 
 </style>
@@ -16,13 +17,25 @@
 {% block body %}
     <div class="container">
         <div class="content">
-            <h1>this is index page</h1>
-            <h1>this is index page</h1>
-            <h1>this is index page</h1>
-            <h1>this is index page</h1>
+            <div class="content">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                <h2 class="panel-title">待批课程</h2>
+                </div>
+                <div class="panel-body">
+                {% if app_list %}
+                {% for a in app_list %}
+                    <h3>{{ a.name }} --- {{ a.teacher.name }} --- {{ a.credit }} --- {{ a.classroom.name }} </h3>
+                {% endfor %}
+                    <a href="/e/approve.html"><button class="btn btn-primary">进行审批</button></a>
+                {% else %}
+                    <h4>今日没有待批课程~~ Have A Nice Day~</h4>
+                {% endif %}
+                </div>
+            </div>
         </div>
     </div>
-
+    </div>
     <script>
         $("#nav1").addClass("active");
     </script>

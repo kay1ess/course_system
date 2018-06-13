@@ -38,7 +38,7 @@
                     <tbody>
                     {% if app_list %}
                         {% for a in app_list %}
-                            <tr clsId="{{ a.id }}">
+                            <tr clsNo="{{ a.no }}">
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ a.no }}</td>
                                 <td>{{ a.name }}</td>
@@ -72,16 +72,16 @@
     <script>
         $("#nav4").addClass("active");
         function Pass(th) {
-            var clsId = $(th).parent().parent().attr('clsId')
+            var clsNo = $(th).parent().parent().attr('clsNo')
             $.ajax({
                 url: 'Pass',
-                data: {"appId":clsId},
+                data: {"clsNo":clsNo},
                 dataType:"JSON",
                 type:"GET",
                 success:function (arg) {
                     if(arg.status){
                         alert(arg.msg);
-                        $('[clsId="'+clsId+'"]').remove()
+                        $('[clsNo="'+clsNo+'"]').remove()
                     }else {
                         alert(arg.msg);
                     }
@@ -90,16 +90,16 @@
             })
         }
         function noPass(th) {
-            clsId = $(th).parent().parent().attr('clsId')
+            clsNo = $(th).parent().parent().attr('clsNo')
             $.ajax({
                 url: 'noPass',
-                data: {"appId":clsId},
+                data: {"clsNo":clsNo},
                 dataType:"JSON",
                 type:"GET",
                 success:function (arg) {
                     if(arg.status){
                         alert(arg.msg);
-                        $('[clsId="'+clsId+'"]').remove()
+                        $('[clsNo="'+clsNo+'"]').remove()
                     }else {
                         alert(arg.msg);
                     }
