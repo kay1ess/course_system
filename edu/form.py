@@ -110,3 +110,9 @@ class ChangePwdForm(forms.Form):
             'invalid': '输入密码不符合要求'
         }
     )
+
+class SearchForm(forms.Form):
+    content = fields.CharField(
+        widget=widgets.TextInput(attrs={"class":"form-control","placeholder":"请输入课程号或课程名"}),
+        max_length=30
+    )

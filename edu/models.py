@@ -33,6 +33,7 @@ class EduAdmin(models.Model):
     tel = models.CharField(max_length=11)
     email = models.EmailField()
     birth = models.CharField(max_length=10)
+    is_first = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 
@@ -55,8 +56,10 @@ class NewCourse(models.Model):
     credit = models.DecimalField(max_digits=2, decimal_places=1)
     created_by = models.ForeignKey(EduAdmin, on_delete=models.SET_NULL, null=True)
     ctime = models.DateTimeField(auto_now_add=True)
-    status = models.NullBooleanField(default='None', null=True)
-
+    #0 新发布 1被申请 2申请通过并上线 3申请拒绝 4下线
+    status = models.IntegerField(max_length=1, default=0)
+    def __str__(self):
+        self.name
 
 
 

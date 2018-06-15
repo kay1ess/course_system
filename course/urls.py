@@ -30,9 +30,21 @@ urlpatterns = [
     path('e/pubNews.html', e_views.pub_news),
     path('e/newNews.html', e_views.edit_news),
     path('e/approve.html', e_views.approve),
+    path('e/manageCenter.html', e_views.manager_center),
 
-    re_path(r'e/Pass', e_views.pass_),
-    re_path(r'e/noPass', e_views.nopass_),
+    path('m_course',e_views.m_course),
+
+    path('del_course', e_views.del_course),
+    path('offline_course', e_views.offline_course),
+    path('m_course_detail',e_views.m_course_detail),
+    path('online_course', e_views.online_course),
+
+    path('m_news',e_views.m_news),
+    path('m_student',e_views.m_student),
+    path('m_teacher',e_views.m_teacher),
+
+    path(r'e/Pass', e_views.pass_),
+    path(r'e/noPass', e_views.nopass_),
 
     path('t/index.html', t_views.index),
     path('t/appCourse.html', t_views.app_course),

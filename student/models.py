@@ -20,6 +20,7 @@ class Student(models.Model):
     grade = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     college = models.ForeignKey(College, on_delete=models.SET_NULL, null=True)
     birth = models.CharField(max_length=10)
+    is_first = models.BooleanField(default=False)
 
 class StuSelected(models.Model):
     no = models.CharField(max_length=8, unique=True)

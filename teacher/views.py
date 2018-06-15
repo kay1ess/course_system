@@ -35,7 +35,7 @@ def index(request):
 def app_course(request):
     if request.method == "GET":
         obj = AppForm()
-        courses = NewCourse.objects.filter(status=None).order_by('-ctime')
+        courses = NewCourse.objects.filter(status=0).order_by('-ctime')
         return render(request, "t_appCourse.html", {"courses":courses, "obj":obj})
     if request.method == "POST":
         ret = {"status":True, "msg":None}
@@ -62,7 +62,7 @@ def app_course(request):
                     applied_course_id=AppliedCourse.objects.last().id,
                     teacher_id=teacher_id
                                                     )
-                NewCourse.objects.filter(no=obj.cleaned_data.get("no")).update(status=True)
+                NewCourse.objects.filter(no=obj.cleaned_data.get("no")).update(status=1)
 
                 ret["msg"] = "申请成功"
             except Exception as e:

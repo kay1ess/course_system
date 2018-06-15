@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery-tablesorter.min.js"></script>
+    <style>
+         .input-group{
+             padding-top: 10px;
+             padding-bottom: 20px;
+             width: 300px;
+         }
+        .title-r {
+            margin-top: -50px;
+            padding-bottom: 10px;
+            float: right;
+        }
+        .hide {
+            display: none;
+        }
+        .show {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+<form method="post">
+    {% csrf_token %}
+<div class="input-group">
+    {{ fm.content }}
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">搜索</button>
+      </span>
+</div>
+</form>
+<div class="title-r">
+        <span><button class="btn-danger btn" onclick="Del()">删除选中课程</button></span>
+        <span><button class="btn-default btn" onclick="Offline()">下线选中课程</button></span>
+
+    </div>
+
+
+
+    <div>
+        <table class="table table-bordered table-condensed sort-table">
+            <thead>
+
+                <tr>
+                    <td><input type="checkbox" onclick="SelectAll()" id="select"><small>全选</small></td>
+                    <th>课程号</th>
+                    <th>课程名</th>
+                    <th>开课学院</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if data %}
+            {% for c in data %}
+                <tr class="first-tr" cno="{{ c.no }}" status="{{ c.status }}">
+                    <td><input type="checkbox" name="course"></td>
+                    <td>{{ c.no }}</td>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.college.name }}</td>
+                    <td>{{ c.ctime }}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="detail(this);">查看详情</button>
+                        <button onclick="offlineOne(this)" class="btn btn-default btn-sm" title="下线后，老师和学生将无法看到此课程">下线课程</button>
+                        <button onclick="onlineOne(this)" class="btn btn-success btn-sm" title="上线课程">上线课程</button>
+                        <button onclick="delOne(this)" class="btn btn-danger btn-sm" title="学生和老师已选的课程也将被删除">删除课程</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="5"><h1 style="color: silver;text-align: center">未搜索到相关课程</h1></td>
+            </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <ul class="pagination">
+            <li>
+            {{ obj.page_range_str|safe }}
+            </li>
+          </ul>
+    </div>
+</div>
+
+<script>
+    $.ajaxSetup({
+　　      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+
+    $(document).ready(function() {
+        $(".sort-table").tablesorter();
+    });
+
+    function onlineOne(t) {
+        var cno = $(t).parent().parent().attr("cno");
+        $.ajax({
+            url:'online_course',
+            type:'POST',
+            dataType:'JSON',
+            data:{"cno":cno},
+            success:function (arg) {
+                if(arg.status==true){
+                    alert("上线成功");
+                    window.location.reload();
+                }else {
+                    alert("上线失败，请重新尝试");
+                }
+            }
+
+        })
+    }
+
+    function detail(t) {
+        window.parent.$('#courseDetail').modal('show');
+        var cno = $(t).parent().parent().attr('cno');
+        $.ajax({
+            url:'m_course_detail',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {"cno":cno},
+            success:function (arg) {
+                window.parent.$("#courseDetail").find("input").each(function (i) {
+                    window.parent.$(this).val(arg[i]);
+
+                })
+            }
+
+        })
+    }
+
+    function SelectAll() {
+        v = $("#select").prop("checked");
+        if(v==true){
+            $(":checkbox").prop("checked",true);
+        }else{
+            $(":checkbox").prop("checked",false);
+        }
+
+
+
+    }
+
+    function Del() {
+
+        var arr = new Array();
+        $("input[name='course']:checked").each(function () {
+            arr.push($(this).parent().parent().attr("cno"))
+        });
+
+        if (arr == '') {
+            alert("没有选择任何课程！");
+        } else {
+            $.ajax({
+                url: 'del_course',
+                type: 'POST',
+                dataType: "JSON",
+                data: {"cno": arr},
+                success: function (arg) {
+                    if (arg.status==true) {
+                        alert("删除成功！");
+                        window.location.reload();
+                    } else {
+                        alert("删除失败！请重新尝试");
+                    }
+                }
+            })
+        }
+    }
+
+    $(function () {
+        offlineEvent();
+    });
+    function offlineEvent() {
+        $(".first-tr").each(function () {
+            var s = $(this).attr("status");
+            if(s==4){
+                $(this).addClass("danger");
+                $(this).children("td").eq(5).children("button").eq(1).addClass("hide");
+            }else {
+                $(this).children("td").eq(5).children("button").eq(2).addClass("hide");
+
+            }
+        })
+    }
+
+    function Offline() {
+
+        var arr = new Array();
+        $("input[name='course']:checked").each(function () {
+            arr.push($(this).parent().parent().attr("cno"))
+        });
+
+        if (arr == '') {
+            alert("没有选择任何课程！");
+        } else {
+            $.ajax({
+                url: 'offline_course',
+                type: 'POST',
+                dataType: "JSON",
+                data: {"cno": arr},
+                success: function (arg) {
+
+                    if (arg.status==true) {
+                        alert("下线成功！");
+                        window.location.reload();
+                    } else {
+                        alert("下线失败！请重新尝试");
+                    }
+                }
+            })
+        }
+    }
+
+    function offlineOne(t) {
+            var cno = $(t).parent().parent().attr("cno");
+            $.ajax({
+                url: 'offline_course',
+                type: 'POST',
+                dataType: "JSON",
+                data: {"cno[]": cno},
+                success: function (arg) {
+                    if (arg.status==true) {
+                        alert("下线成功！");
+                        window.location.reload();
+                    } else {
+                        alert("下线失败！请重新尝试");
+                    }
+                }
+            })
+
+    }
+
+    function delOne(t) {
+        var cno = $(t).parent().parent().attr("cno");
+        $.ajax({
+            url: 'del_course',
+                type: 'POST',
+                dataType: "JSON",
+                data: {"cno[]":cno},
+                success: function (arg) {
+                    if (arg.status==true) {
+                        alert("删除成功！");
+                        window.location.reload();
+                    } else {
+                        alert("删除失败！请重新尝试");
+                    }
+                }
+        })
+    }
+</script>
+
+</body>
+</html>

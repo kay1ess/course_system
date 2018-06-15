@@ -154,7 +154,7 @@
                 dataType: "JSON",
                 data: $("#pubfm").serialize(),
                 success:function (arg) {
-                    console.log(arg);
+
                     if(arg.status){
                         $("#addModal").modal("hide");
                         window.location.reload();

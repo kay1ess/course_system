@@ -2,12 +2,14 @@ import json
 
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.models import Group
+from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import render
-from edu.form import PubForm, NewsForm
+from edu.form import PubForm, NewsForm, SearchForm
 from edu.models import NewCourse, News, EduAdmin
 from student.models import StuSelected
 from teacher.models import AppliedCourse
+from course.ulti import MyPagination
 
 # Create your views here.
 
@@ -114,7 +116,7 @@ def pass_(request):
             credit=c.credit,
             classroom_id=c.classroom.id
         )
-        NewCourse.objects.filter(no=no).update(status=False)
+        NewCourse.objects.filter(no=no).update(status=2)
 
     except Exception as e:
         print(str(e))
@@ -129,9 +131,105 @@ def nopass_(request):
     try:
         no = request.GET.get('clsNo')
         AppliedCourse.objects.filter(no=no).update(status=False)
-        NewCourse.objects.filter(no=no).update(status=False)
+        NewCourse.objects.filter(no=no).update(status=3)
     except Exception as e:
         print(str(e))
         ret["status"] = False
         ret["msg"] = "数据库操作失败，请联系系统管理员"
     return HttpResponse(json.dumps(ret))
+
+def manager_center(request):
+    return render(request, "manage_center.html")
+
+def m_course(request):
+    if request.method == "GET":
+        fm = SearchForm()
+        c = NewCourse.objects.all()
+        cours = c.order_by("ctime")
+        cours_r = c.order_by("-ctime")
+        no = c.order_by("no")
+        no_r = c.order_by("-no")
+        obj = MyPagination(cours_r.count(), request.GET.get("p"), 10, url='m_course')
+        data = cours[obj.start():obj.end()]
+        return render(request, "m_course.html", locals())
+    if request.method == "POST":
+        fm = SearchForm(request.POST)
+        if fm.is_valid():
+            content = fm.cleaned_data.get("content")
+            if content.isdigit():
+                cours_r = NewCourse.objects.filter(no__contains=content).order_by("-ctime")
+                obj = MyPagination(cours_r.count(), request.GET.get("p"), 10, url='m_course')
+                data = cours_r[obj.start():obj.end()]
+            else:
+                cours_r = NewCourse.objects.filter(name__contains=content).order_by("-ctime")
+                obj = MyPagination(cours_r.count(), request.GET.get("p"), 10, url='m_course')
+                data = cours_r[obj.start():obj.end()]
+            return render(request, 'm_course.html', {"data":data, "fm":fm})
+        else:
+            return HttpResponse("输入不符合要求，请重新输入")
+
+def del_course(request):
+    if request.method == "POST":
+        ret = {"status":True,"msg":"删除成功"}
+        try:
+            ls = request.POST.getlist("cno[]")
+            for i in ls:
+                AppliedCourse.objects.filter(no=i).delete()
+                NewCourse.objects.filter(no=i).delete()
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "删除失败"
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+def offline_course(request):
+    if request.method == "POST":
+        ret = {"status":True,"msg":"下线成功"}
+        try:
+            ls = request.POST.getlist("cno[]")
+            for i in ls:
+                NewCourse.objects.filter(no=i).update(status=4)
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "下线失败"
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+def m_course_detail(request):
+    cno = request.GET.get("cno")
+    data = []
+    course = AppliedCourse.objects.filter(no=cno)
+    print(cno)
+    if course:
+        for cour_detail in course:
+            data.extend([cour_detail.no,cour_detail.name,float(cour_detail.credit),cour_detail.college.name,
+                         cour_detail.teacher.name,cour_detail.classroom.name,cour_detail.week.name,
+                         cour_detail.time.duration])
+    else:
+        course = NewCourse.objects.filter(no=cno)
+        for cour_detail in course:
+            data.extend([cour_detail.no,cour_detail.name,float(cour_detail.credit),cour_detail.college.name])
+    return HttpResponse(json.dumps(data, ensure_ascii=False))
+
+def online_course(request):
+    if request.method == "POST":
+        ret = {"status":True}
+        cno = request.POST.get("cno")
+        try:
+            NewCourse.objects.filter(no=cno).update(status=0)
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        except Exception:
+            ret["status"] = False
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+def m_news(request):
+    pass
+
+def m_student(request):
+    pass
+
+def m_teacher(request):
+    pass

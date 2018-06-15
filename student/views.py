@@ -128,7 +128,7 @@ def login_(request):
                 if group.id == g_id:
                     ret["status"] = "success"
 
-                    # 尝试从last_login作为判断 逻辑失败
+
 
                     login(request, user)
 

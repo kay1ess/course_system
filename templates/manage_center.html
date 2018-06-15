@@ -1,0 +1,172 @@
+{% extends 'edu_base.html' %}
+{% block title %}
+管理中心
+{% endblock %}
+{% block head %}
+<style>
+
+    .content {
+        min-height: 600px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .nav-left {
+        float: left;
+        border-radius: 10px;
+        width: 20%;
+        background-color: rgb(50,120,180);
+        min-height: inherit;
+    }
+    .nav-right {
+
+        float: right;
+        width: 80%;
+        min-height: 620px;
+
+    }
+    .list-group {
+        margin: 10px;
+        padding-top: 20px;
+
+    }
+    .list-group-item {
+        background-color: rgb(50,120,180);
+        color: white;
+        text-align: left;
+        font-size: 20px;
+    }
+
+    .press {
+        background-color: white;
+        color: rgb(50,120,180);
+    }
+
+    iframe {
+        width: 110%;
+        height: 620px;
+        border: 0px;
+    }
+
+    a:link {
+        text-decoration: none;
+    }
+    a:hover{
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+{% block body %}
+
+    <div class="content container">
+    <div class="nav-left">
+        <ul class="list-group">
+          <a href="#"><li class="list-group-item" id="left-nav1" onclick="m_course()">课程管理 </li></a>
+          <a href="#"><li class="list-group-item" id="left-nav2" onclick="m_news()">消息管理</li></a>
+          <a href="#"><li class="list-group-item" id="left-nav3" onclick="m_teacher()">教师管理</li></a>
+          <a href="#"><li class="list-group-item" id="left-nav4" onclick="m_student()">学生管理</li></a>
+        </ul>
+    </div>
+    <div class="nav-right">
+    <iframe>
+
+    </iframe>
+    </div>
+    </div>
+<div class="modal fade" id="courseDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">申请新课程</h3>
+                </div>
+                <div class="modal-body">
+
+                        <div class="form-group">
+
+
+                            <p>
+                                <span>课程号</span>
+                                <input class="form-control" type="text" disabled name="no">
+                                </p>
+                            <p>
+                            <p>
+                                <span>课程名</span>
+                                <input class="form-control" type="text" disabled name="name">
+                                </p>
+                            <p>
+                            <p>
+                                <span>学分</span>
+                                <input class="form-control" type="text" disabled name="credit">
+                                </p>
+                            <p>
+                            <p>
+                                <span>授课学院</span>
+                                <input class="form-control" type="text" disabled name="college">
+                                </p>
+                            <p><p>
+                                <span>任课教师</span>
+                                <input class="form-control" type="text" disabled name="teacher">
+                                </p>
+                            <p>
+                                <span>教室</span>
+                                <input class="form-control" type="text" disabled name="classroom">
+
+                                </p>
+                            <p>
+                                <span>星期</span>
+                                <input class="form-control" type="text" disabled name="week">
+
+                               </p>
+                            <p>
+                                <span>时间</span>
+                                <input class="form-control" type="text" disabled name="time">
+
+                            </p>
+
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+        $("#nav5").addClass("active");
+
+        function m_course() {
+            $("#left-nav1").addClass("press");
+            $("#left-nav2").removeClass("press");
+            $("#left-nav3").removeClass("press");
+            $("#left-nav4").removeClass("press");
+            $("iframe").attr("src","/m_course");
+
+
+        }
+        function m_news() {
+            $("#left-nav2").addClass("press");
+            $("#left-nav1").removeClass("press");
+            $("#left-nav3").removeClass("press");
+            $("#left-nav4").removeClass("press");
+            $("iframe").attr("src","/m_news");
+
+        }
+        function m_teacher() {
+            $("#left-nav3").addClass("press");
+            $("#left-nav1").removeClass("press");
+            $("#left-nav2").removeClass("press");
+            $("#left-nav4").removeClass("press");
+            $("iframe").attr("src","/m_teacher");
+
+        }
+        function m_student() {
+            $("#left-nav4").addClass("press");
+            $("#left-nav1").removeClass("press");
+            $("#left-nav2").removeClass("press");
+            $("#left-nav3").removeClass("press");
+            $("iframe").attr("src","/m_student");
+
+        }
+</script>
+{% endblock %}

@@ -61,5 +61,6 @@ class Teacher(models.Model):
     email = models.EmailField()
     tel = models.CharField(max_length=11)
     birth = models.CharField(max_length=10)
+    is_first = models.BooleanField(default=False)
 
 
