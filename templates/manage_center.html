@@ -12,10 +12,10 @@
     }
     .nav-left {
         float: left;
-        border-radius: 10px;
         width: 20%;
         background-color: rgb(50,120,180);
         min-height: inherit;
+
     }
     .nav-right {
 
@@ -71,7 +71,7 @@
         </ul>
     </div>
     <div class="nav-right">
-    <iframe>
+    <iframe id="ifm">
 
     </iframe>
     </div>
@@ -82,7 +82,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="myModalLabel">申请新课程</h3>
+                    <h3 class="modal-title" id="myModalLabel">课程详情</h3>
                 </div>
                 <div class="modal-body">
 
@@ -298,68 +298,127 @@
         </div>
     </div>
 
-{#<div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">#}
-{#        <div class="modal-dialog" role="document">#}
-{#            <div class="modal-content">#}
-{#                <div class="modal-header">#}
-{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
-{#                            aria-hidden="true">&times;</span></button>#}
-{#                    <h3 class="modal-title" id="myModalLabel">教师详情</h3>#}
-{#                </div>#}
-{#                <div class="modal-body">#}
-{##}
-{#                        <div class="form-group">#}
-{##}
-{##}
-{#                            <p>#}
-{#                                <span>姓名</span>#}
-{#                                <input class="form-control" type="text" disabled name="no">#}
-{#                                </p>#}
-{#                            <p>#}
-{#                            <p>#}
-{#                                <span>工号</span>#}
-{#                                <input class="form-control" type="text" disabled name="name">#}
-{#                                </p>#}
-{#                            <p>#}
-{#                            <p>#}
-{#                                <span>性别</span>#}
-{#                                <input class="form-control" type="text" disabled name="gender">#}
-{#                                </p>#}
-{#                            <p>#}
-{#                            <p>#}
-{#                                <span>所属学院</span>#}
-{#                                <input class="form-control" type="text" disabled name="credit">#}
-{#                                </p>#}
-{#                            <p>#}
-{#                            <p>#}
-{#                                <span>职位</span>#}
-{#                                <input class="form-control" type="text" disabled name="college">#}
-{#                                </p>#}
-{#                            <p><p>#}
-{#                                <span>电子邮箱</span>#}
-{#                                <input class="form-control" type="text" disabled name="teacher">#}
-{#                                </p>#}
-{#                            <p>#}
-{#                                <span>电话</span>#}
-{#                                <input class="form-control" type="text" disabled name="classroom">#}
-{##}
-{#                                </p>#}
-{#                            <p>#}
-{#                                <span>生日</span>#}
-{#                                <input class="form-control" type="text" disabled name="week">#}
-{##}
-{#                               </p>#}
-{##}
-{#                        </div>#}
-{##}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
+
+<div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">修改教师资料</h3>
+                </div>
+                <div class="modal-body">
+                    <form action="editTeacher" method="post" id="edit-fm">
+                        <div class="form-group">
+
+                            {% csrf_token %}
+                                <p>
+                                <span>姓名</span>
+                                {{ obj.name }}
+                                <br>
+                                <small id="errName"></small></p>
+
+                            <p>
+                                <span>工号</span>
+                                {{ obj.no }}
+                                <br>
+                                <small id="errNo2"></small></p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ obj.gender }}
+                                <br>
+                                <small id="errGender2"></small></p>
+
+                            <p>
+                                <span>身份证号</span>
+                                {{ obj.card_id }}
+                                <br>
+                                <small id="errCardId2"></small></p>
+                            <p>
+                                <span>所属学院</span>
+                                {{ obj.college_id }}
+                                <br>
+                                <small id="errCollege2"></small></p>
+
+                            <p>
+                                <span>职位</span>
+                            {{ obj.position_id }}
+                                <br>
+                                <small id="errPos2"></small></p>
+                            <p>
+                                <span>电子邮箱</span>
+                            {{ obj.email }}
+                                <br>2Ω
+                                <small id="errEmail2"></small></p>
+                            <p>
+                                <span>电话</span>
+                            {{ obj.tel }}
+                                <br>
+                                <small id="errTel2"></small></p>
+
+
+                        </div>
+                </form>
+                    <div class="modal-footer">
+                    <small><b id="err_msg" style="float: left"></b></small>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary"onclick="edit()">确定</button>
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 <script>
         $("#nav5").addClass("active");
+
+        $.ajaxSetup({
+　　      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+
+        var i = $(".tno-setting").attr("readonly",true)
+
+        function edit() {
+
+            $("#err_msg2").html("");
+            $("#errName2").html("");
+            $("#errNo2").html("");
+            $("#errGender2").html("");
+            $("#errCardId2").html("");
+            $("#errCollege2").html("");
+            $("#errPos2").html("");
+            $("#errEmail2").html("");
+            $("#errTel2").html("");
+
+            $.ajax({
+                url: "/editTeacher",
+                type: "POST",
+                dataType: "json",
+                data: $("#edit-fm").serialize(),
+                success:function (arg) {
+                    if(arg.status==true){
+                        $("#editTeacher").modal("hide");
+                        window.location.href = "manageCenter.html"
+                    }else {
+                        console.log("failed")
+                        console.log(arg.msg.tel)
+                       $("#err_msg2").html(arg.msg).css("color","red");
+                        $("#errName2").html(arg.msg.name).css("color","red");
+                        $("#errGender2").html(arg.msg.gender).css("color","red");
+                        $("#errCardId2").html(arg.msg.card_id).css("color","red");
+                        $("#errCollege2").html(arg.msg.college_id).css("color","red");
+                        $("#errPos2").html(arg.msg.position_id).css("color","red");
+                        $("#errEmail").html(arg.msg.email).css("color","red");
+                        $("#errTel2").html(arg.msg.tel).css("color","red");
+
+                    }
+                }
+            })
+        }
 
         function m_course() {
             $("#left-nav1").addClass("press");
@@ -411,20 +470,20 @@
                 dataType: "JSON",
                 data: $("#fm").serialize(),
                 success:function (arg) {
-                    if(arg.status){
+                    if(arg.status==true){
                         $("#addModal").modal("hide");
                         window.location.reload();
                     }else{
                         console.log("失败");
-                        $("#err_msg").html(arg.msg);
-                        $("#errName").html(arg.msg.name);
-                        $("#errNo").html(arg.msg.no);
-                        $("#errGender").css("color","red").html(arg.msg.gender);
-                        $("#errCardId").html(arg.msg.card_id);
-                        $("#errCollege").html(arg.msg.college_id);
-                        $("#errPos").html(arg.msg.position_id);
-                        $("#errEmail").html(arg.msg.email);
-                        $("#errTel").html(arg.msg.tel);
+                        $("#err_msg").html(arg.msg).css("color","red");
+                        $("#errName").html(arg.msg.name).css("color","red");
+                        $("#errNo").html(arg.msg.no).css("color","red");
+                        $("#errGender").css("color","red").html(arg.msg.gender).css("color","red");
+                        $("#errCardId").html(arg.msg.card_id).css("color","red");
+                        $("#errCollege").html(arg.msg.college_id).css("color","red");
+                        $("#errPos").html(arg.msg.position_id).css("color","red");
+                        $("#errEmail").html(arg.msg.email).css("color","red");
+                        $("#errTel").html(arg.msg.tel).css("color","red");
 
                     }
                 }

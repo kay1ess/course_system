@@ -49,6 +49,7 @@ urlpatterns = [
     path('m_teacher',e_views.m_teacher),
     path('del_teacher',e_views.del_teacher),
     path('teacher_detail',e_views.teacher_detail),
+    path('editTeacher',e_views.editTeacher),
 
 
 

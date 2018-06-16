@@ -132,7 +132,7 @@ class TeacherSearchForm(forms.Form):
 
 class AddTeacher(forms.Form):
     no = fields.CharField(
-        widget=widgets.TextInput(attrs={"class":"form-control","placeholder":"请输入工号"}),
+        widget=widgets.TextInput(attrs={"class":"form-control tno-setting","placeholder":"请输入工号"}),
         validators=[RegexValidator(r'\d{8}')]
     )
     name = fields.CharField(

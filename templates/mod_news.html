@@ -42,7 +42,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">修改消息</div>
             <div class="panel-body">
-                <form id="newfm" method="post">
+                <form id="newfm" method="post" nid="{{ obj.nid }}">
                     {% csrf_token %}
                     <p>
                         <label>标题：</label>
@@ -84,8 +84,9 @@ function editNews() {
             $("#err_title").html("");
             $("#err_content").html("");
             $("#err_msg").html("");
+            var nid = $("#newfm").attr("nid");
             $.ajax({
-                url: "mod_news.html3",
+                url: "mod_news.html"+nid,
                 type: "POST",
                 dataType: "json",
                 data: $("#newfm").serialize(),

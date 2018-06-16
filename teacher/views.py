@@ -40,7 +40,7 @@ def app_course(request):
     if request.method == "POST":
         ret = {"status":True, "msg":None}
         obj = AppForm(request.POST)
-        # print(request.user)
+
         teacher_id = Teacher.objects.filter(no__username=request.user).first().id
         if obj.is_valid():
             try:
@@ -82,6 +82,7 @@ def app_course(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
         else:
+
             ret["status"] = False
             ret["msg"] = "申请数据有误，请重新尝试"
             return HttpResponse(json.dumps(ret, ensure_ascii=False))

@@ -180,8 +180,8 @@ def manager_center(request):
 
             except Exception as e:
                 ret["status"] = False
-                if str(e) == "UNIQUE constraint failed: teacher_teacher.no":
-                    ret["msg"] = "课程号已经被使用，请重写填写"
+                if str(e) == "UNIQUE constraint failed: teacher_teacher.no_id":
+                    ret["msg"] = "工号已经被使用，请重写填写"
                 else:
                     ret["msg"] = "数据库写入异常，请联系管理员，错误代码:"+str(e)
             return HttpResponse(json.dumps(ret))
@@ -341,6 +341,7 @@ def mod_news(request, nid):
     if request.method == "GET":
         news = News.objects.get(id=nid)
         obj = NewsForm({
+            'nid':nid,
             'title':news.title,
             'content':news.content,
             'watchers':news.watchers
@@ -425,6 +426,62 @@ def teacher_detail(request):
                      teacher.tel,teacher.birth
                      ])
     return HttpResponse(json.dumps(data, ensure_ascii=False))
+
+def editTeacher(request):
+    if request.method == "GET":
+        tno = request.GET.get("tno")
+        data = []
+        teacher = Teacher.objects.get(no__username=tno)
+        if teacher.gender:
+            teacher.gender = 1
+        else:
+            teacher.gender = 0
+        data.extend(['',teacher.name,teacher.no.username,teacher.gender,teacher.card_id,teacher.college_id,
+                         teacher.position_id,
+                         teacher.email,
+                         teacher.tel])
+        print(data)
+        return HttpResponse(json.dumps(data, ensure_ascii=False))
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        obj = AddTeacher(request.POST)
+        print(request.POST)
+
+        if obj.is_valid():
+            try:
+                no = obj.cleaned_data.get("no")
+                name = obj.cleaned_data.get("name")
+                gender = obj.cleaned_data.get("gender")
+                card_id = obj.cleaned_data.get("card_id")
+                college_id = obj.cleaned_data.get("college_id")
+                position_id = obj.cleaned_data.get("position_id")
+                email = obj.cleaned_data.get("email")
+                tel = obj.cleaned_data.get("tel")
+
+                if gender != 1:
+                    gender = 0
+                Teacher.objects.filter(no__username=no).update(
+                    name=name,
+                    gender=gender,
+                    card_id=card_id,
+                    college_id=college_id,
+                    position_id=position_id,
+                    email=email,
+                    tel=tel,
+                    birth=card_id[6:12]
+                )
+                ret["msg"] = "创建成功"
+
+            except Exception as e:
+                print(str(e))
+                ret["status"] = False
+                ret["msg"] = "数据库写入异常，请联系管理员，错误代码:" + str(e)
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        else:
+            ret["status"] = False
+            ret["msg"] = obj.errors
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
 
 def resetPwd(request):
     if request.method == "POST":

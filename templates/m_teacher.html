@@ -97,10 +97,27 @@
         $(".sort-table").tablesorter();
     });
 
-    {#function edit(t) {#}
-    {#    #}
-    {#    #}
-    {#}#}
+    function edit(t) {
+        window.parent.$('#editTeacher').modal('show');
+        var tno = $(t).parent().parent().attr('tno');
+        $.ajax({
+            url:'editTeacher',
+            dataType:'JSON',
+            type:'GET',
+            data:{"tno":tno},
+            success:function (arg) {
+                window.parent.$("#editTeacher #id_name").attr("value",arg[1])
+                window.parent.$("#editTeacher #id_no").attr("value",arg[2])
+                window.parent.$("#editTeacher #id_gender").attr("value",arg[3])
+                window.parent.$("#editTeacher #id_card_id").attr("value",arg[4])
+                window.parent.$("#editTeacher #id_college_id").attr("value",arg[5])
+                window.parent.$("#editTeacher #id_position_id").attr("value",arg[6])
+                window.parent.$("#editTeacher #id_email").attr("value",arg[7])
+                window.parent.$("#editTeacher #id_tel").attr("value",arg[8])
+            }
+        })
+
+    }
 
 
     function resetPwd(t) {
@@ -185,6 +202,18 @@
 
     function Add() {
         window.parent.$('#addTeacher').modal('show');
+    }
+
+     function SelectAll() {
+        v = $("#select").prop("checked");
+        if(v==true){
+            $(":checkbox").prop("checked",true);
+        }else{
+            $(":checkbox").prop("checked",false);
+        }
+
+
+
     }
 </script>
 </body>
