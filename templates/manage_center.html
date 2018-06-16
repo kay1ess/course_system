@@ -53,6 +53,10 @@
     a:hover{
         text-decoration: none;
     }
+    #err_msg {
+            color: red;
+            font-size: 20px;
+        }
 </style>
 {% endblock %}
 {% block body %}
@@ -131,9 +135,7 @@
         </div>
     </div>
 
-button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  Launch demo modal
-</button>
+
 
 <!-- Modal -->
 <div class="modal fade" id="newsDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -161,6 +163,200 @@ button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-tar
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="addTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">教师详情</h3>
+                </div>
+                <div class="modal-body">
+                    <form action="manage_center.html" method="post" id="fm">
+                        {% csrf_token %}
+                        <div class="form-group">
+
+
+                            <p>
+                                <span>姓名</span>
+                                {{ obj.name }}
+                                <br>
+                                <small id="errName"></small></p>
+
+                            <p>
+                                <span>工号</span>
+                                {{ obj.no }}
+                                <br>
+                                <small id="errNo"></small></p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ obj.gender }}
+                                <br>
+                                <small id="errGender"></small></p>
+
+                            <p>
+                                <span>身份证号</span>
+                                {{ obj.card_id }}
+                                <br>
+                                <small id="errCardId"></small></p>
+                            <p>
+                                <span>所属学院</span>
+                                {{ obj.college_id }}
+                                <br>
+                                <small id="errCollege"></small></p>
+
+                            <p>
+                                <span>职位</span>
+                            {{ obj.position_id }}
+                                <br>
+                                <small id="errPos"></small></p>
+                            <p>
+                                <span>电子邮箱</span>
+                            {{ obj.email }}
+                                <br>
+                                <small id="errEmail"></small></p>
+                            <p>
+                                <span>电话</span>
+                            {{ obj.tel }}
+                                <br>
+                                <small id="errTel"></small></p>
+
+
+                        </div>
+                </form>
+                    <div class="modal-footer">
+                    <small><b id="err_msg" style="float: left"></b></small>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="pubBtn" onclick="add();">发布</button>
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal fade" id="teacherDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">教师详情</h3>
+                </div>
+                <div class="modal-body">
+
+                        <div class="form-group">
+
+
+                            <p>
+                                <span>姓名</span>
+                                <input class="form-control" type="text" disabled name="no">
+                                </p>
+                            <p>
+                            <p>
+                                <span>工号</span>
+                                <input class="form-control" type="text" disabled name="name">
+                                </p>
+                            <p>
+                            <p>
+                                <span>性别</span>
+                                <input class="form-control" type="text" disabled name="gender">
+                                </p>
+                            <p>
+                            <p>
+                                <span>所属学院</span>
+                                <input class="form-control" type="text" disabled name="credit">
+                                </p>
+                            <p>
+                            <p>
+                                <span>职位</span>
+                                <input class="form-control" type="text" disabled name="college">
+                                </p>
+                            <p><p>
+                                <span>电子邮箱</span>
+                                <input class="form-control" type="text" disabled name="teacher">
+                                </p>
+                            <p>
+                                <span>电话</span>
+                                <input class="form-control" type="text" disabled name="classroom">
+
+                                </p>
+                            <p>
+                                <span>生日</span>
+                                <input class="form-control" type="text" disabled name="week">
+
+                               </p>
+
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{#<div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">#}
+{#        <div class="modal-dialog" role="document">#}
+{#            <div class="modal-content">#}
+{#                <div class="modal-header">#}
+{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
+{#                            aria-hidden="true">&times;</span></button>#}
+{#                    <h3 class="modal-title" id="myModalLabel">教师详情</h3>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{##}
+{#                        <div class="form-group">#}
+{##}
+{##}
+{#                            <p>#}
+{#                                <span>姓名</span>#}
+{#                                <input class="form-control" type="text" disabled name="no">#}
+{#                                </p>#}
+{#                            <p>#}
+{#                            <p>#}
+{#                                <span>工号</span>#}
+{#                                <input class="form-control" type="text" disabled name="name">#}
+{#                                </p>#}
+{#                            <p>#}
+{#                            <p>#}
+{#                                <span>性别</span>#}
+{#                                <input class="form-control" type="text" disabled name="gender">#}
+{#                                </p>#}
+{#                            <p>#}
+{#                            <p>#}
+{#                                <span>所属学院</span>#}
+{#                                <input class="form-control" type="text" disabled name="credit">#}
+{#                                </p>#}
+{#                            <p>#}
+{#                            <p>#}
+{#                                <span>职位</span>#}
+{#                                <input class="form-control" type="text" disabled name="college">#}
+{#                                </p>#}
+{#                            <p><p>#}
+{#                                <span>电子邮箱</span>#}
+{#                                <input class="form-control" type="text" disabled name="teacher">#}
+{#                                </p>#}
+{#                            <p>#}
+{#                                <span>电话</span>#}
+{#                                <input class="form-control" type="text" disabled name="classroom">#}
+{##}
+{#                                </p>#}
+{#                            <p>#}
+{#                                <span>生日</span>#}
+{#                                <input class="form-control" type="text" disabled name="week">#}
+{##}
+{#                               </p>#}
+{##}
+{#                        </div>#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
 
 <script>
         $("#nav5").addClass("active");
@@ -197,6 +393,43 @@ button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-tar
             $("#left-nav3").removeClass("press");
             $("iframe").attr("src","/m_student");
 
+        }
+
+        function add() {
+            $("#err_msg").html("");
+            $("#errName").html("");
+            $("#errNo").html("");
+            $("#errGender").html("");
+            $("#errCardId").html("");
+            $("#errCollege").html("");
+            $("#errPos").html("");
+            $("#errEmail").html("");
+            $("#errTel").html("");
+            $.ajax({
+                url:'manageCenter.html',
+                type: "POST",
+                dataType: "JSON",
+                data: $("#fm").serialize(),
+                success:function (arg) {
+                    if(arg.status){
+                        $("#addModal").modal("hide");
+                        window.location.reload();
+                    }else{
+                        console.log("失败");
+                        $("#err_msg").html(arg.msg);
+                        $("#errName").html(arg.msg.name);
+                        $("#errNo").html(arg.msg.no);
+                        $("#errGender").css("color","red").html(arg.msg.gender);
+                        $("#errCardId").html(arg.msg.card_id);
+                        $("#errCollege").html(arg.msg.college_id);
+                        $("#errPos").html(arg.msg.position_id);
+                        $("#errEmail").html(arg.msg.email);
+                        $("#errTel").html(arg.msg.tel);
+
+                    }
+                }
+
+            })
         }
 </script>
 {% endblock %}

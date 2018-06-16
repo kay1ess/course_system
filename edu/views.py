@@ -1,15 +1,15 @@
 import json
 
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.core import serializers
 from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import render
-from edu.form import PubForm, NewsForm, SearchForm, NewsSearchForm
+from edu.form import PubForm, NewsForm, SearchForm, NewsSearchForm, TeacherSearchForm, AddTeacher
 from edu.models import NewCourse, News, EduAdmin
 from student.models import StuSelected
-from teacher.models import AppliedCourse
+from teacher.models import AppliedCourse, Teacher
 from course.ulti import MyPagination
 
 # Create your views here.
@@ -139,7 +139,58 @@ def nopass_(request):
 @login_required
 @user_passes_test(check_group3)
 def manager_center(request):
-    return render(request, "manage_center.html")
+    if request.method == "GET":
+        obj = AddTeacher()
+        return render(request, "manage_center.html", locals())
+    if request.method == "POST":
+        ret = {"status":True,"msg":None}
+        obj = AddTeacher(request.POST)
+        if obj.is_valid():
+            try:
+                no = obj.cleaned_data.get("no")
+                name = obj.cleaned_data.get("name")
+                gender = obj.cleaned_data.get("gender")
+                card_id = obj.cleaned_data.get("card_id")
+                college_id = obj.cleaned_data.get("college_id")
+                position_id = obj.cleaned_data.get("position_id")
+                email = obj.cleaned_data.get("email")
+                tel = obj.cleaned_data.get("tel")
+
+
+
+                User.objects.create(username=no,password=card_id[12:18])
+                user =  User.objects.filter(username=no).first()
+                no_id = user.id
+                if gender == 2:
+                    gender = 0
+                Teacher.objects.create(
+                    no_id=no_id,
+                    name=name,
+                    gender=gender,
+                    card_id=card_id,
+                    college_id=college_id,
+                    position_id=position_id,
+                    email=email,
+                    tel=tel,
+                    birth=card_id[6:12]
+                )
+                user.groups.add(2)
+
+                ret["msg"] = "创建成功"
+
+            except Exception as e:
+                ret["status"] = False
+                if str(e) == "UNIQUE constraint failed: teacher_teacher.no":
+                    ret["msg"] = "课程号已经被使用，请重写填写"
+                else:
+                    ret["msg"] = "数据库写入异常，请联系管理员，错误代码:"+str(e)
+            return HttpResponse(json.dumps(ret))
+        else:
+            ret["status"] = False
+            ret["msg"] = obj.errors
+            return  HttpResponse(json.dumps(ret))
+
+
 
 @login_required
 @user_passes_test(check_group3)
@@ -322,4 +373,71 @@ def m_student(request):
     pass
 
 def m_teacher(request):
-    pass
+    if request.method == "GET":
+        fm = TeacherSearchForm()
+        t = Teacher.objects.all()
+        obj = MyPagination(t.count(), request.GET.get("p"), 10, url='m_teacher')
+        teachers = t[obj.start():obj.end()]
+        return render(request, "m_teacher.html", {"teachers":teachers,"obj":obj,"fm":fm})
+    if request.method == "POST":
+        fm = TeacherSearchForm(request.POST)
+        if fm.is_valid():
+            content = fm.cleaned_data.get("content")
+            if content.isdigit():
+                t = Teacher.objects.filter(no__username__contains=content)
+                obj = MyPagination(t.count(), request.GET.get("p"), 10, url='m_teacher')
+                teachers = t[obj.start():obj.end()]
+
+            else:
+                t = Teacher.objects.filter(name__contains=content)
+                obj = MyPagination(t.count(), request.GET.get("p"), 10, url='m_teacher')
+                teachers = t[obj.start():obj.end()]
+            return render(request, 'm_teacher.html', {"teachers":teachers, "fm":fm})
+        else:
+            return HttpResponse("输入不符合要求，请重新输入")
+def del_teacher(request):
+    if request.method == "POST":
+        ret = {"status":True,"msg":"删除成功"}
+        try:
+            ls = request.POST.getlist("tno[]")
+            for i in ls:
+                User.objects.filter(username=i).delete()
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "删除失败"
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+def teacher_detail(request):
+    tno = request.GET.get("tno")
+    data = []
+    teachers = Teacher.objects.filter(no__username=tno)
+
+    for teacher in teachers:
+        if teacher.gender:
+            teacher.gender = "男"
+        else:
+            teacher.gender = "女"
+        data.extend([teacher.name,teacher.no.username,teacher.gender,teacher.college.name,
+                     teacher.position.name,
+                     teacher.email,
+                     teacher.tel,teacher.birth
+                     ])
+    return HttpResponse(json.dumps(data, ensure_ascii=False))
+
+def resetPwd(request):
+    if request.method == "POST":
+        ret = {"status":True, "msg":None}
+        no = request.POST.get("no")
+        try:
+            card_id = Teacher.objects.get(no__username=no).card_id
+            user = User.objects.get(username=no)
+            user.set_password(raw_password=card_id[12:18])
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+

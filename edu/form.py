@@ -1,8 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms import fields, widgets
-from edu.models import College, News
-
+from edu.models import College, News, Position
 
 
 class PubForm(forms.Form):
@@ -36,9 +35,6 @@ class PubForm(forms.Form):
 
                                  )
     college_id = fields.IntegerField(widget=widgets.Select(),label="授课学院")
-
-
-
     def __init__(self, *args, **kwargs):
         super(PubForm, self).__init__(*args, **kwargs)
         self.fields['college_id'].widget.choices = College.objects.values_list("id", "name")
@@ -127,3 +123,53 @@ class NewsSearchForm(forms.Form):
         widget=widgets.TextInput(attrs={"class":"form-control","placeholder":"请输入新闻标题"}),
         max_length=30
     )
+
+
+class TeacherSearchForm(forms.Form):
+    content = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入姓名或工号"}),
+    )
+
+class AddTeacher(forms.Form):
+    no = fields.CharField(
+        widget=widgets.TextInput(attrs={"class":"form-control","placeholder":"请输入工号"}),
+        validators=[RegexValidator(r'\d{8}')]
+    )
+    name = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入姓名"}),
+    )
+    choices = (
+        (1,'男'),
+        (2,'女'),
+    )
+    gender = fields.BooleanField(
+        widget=widgets.Select(choices=choices),
+
+    )
+    card_id = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入身份证号"}),
+        validators=[RegexValidator(r'\d{18}')]
+    )
+
+    position_id = fields.IntegerField(widget=widgets.Select())
+
+    college_id = fields.IntegerField(widget=widgets.Select())
+
+    email = fields.EmailField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入电子邮件"}),
+
+    )
+
+    tel = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入电话号"}),
+        validators=[RegexValidator(r'\d{11}')]
+
+    )
+
+
+
+
+    def __init__(self, *args, **kwargs):
+        super(AddTeacher, self).__init__(*args, **kwargs)
+        self.fields['college_id'].widget.choices = College.objects.values_list("id", "name")
+        self.fields['position_id'].widget.choices = Position.objects.values_list("id", "name")

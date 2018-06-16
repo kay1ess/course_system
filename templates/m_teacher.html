@@ -33,7 +33,10 @@
 </div>
 </form>
 <div class="title-r">
+        <span><button class="btn-success btn" onclick="Add()">新建条目</button></span>
+        <span><button class="btn-primary btn" onclick="pathchAdd()">批量创建</button></span>
         <span><button class="btn-danger btn" onclick="Del()">删除选中条目</button></span>
+
     </div>
 
 
@@ -44,26 +47,27 @@
 
                 <tr>
                     <td><input type="checkbox" onclick="SelectAll()" id="select"><small>全选</small></td>
-                    <th>标题</th>
-                    <th>内容</th>
-                    <th>创建时间</th>
-                    <th>创建者</th>
+                    <th>姓名</th>
+                    <th>工号</th>
+                    <th>学院</th>
+                    <th>职位</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-            {% if data %}
-            {% for n in data %}
-                <tr class="first-tr" nid="{{ n.id }}">
+            {% if teachers %}
+            {% for t in teachers %}
+                <tr class="first-tr" tno ="{{ t.no.username }}">
                     <td><input type="checkbox" name="course"></td>
-                    <td><b>{{ n.title|slice:"10" }}</b></td>
-                    <td>{{ n.content|striptags|slice:":20" }}<b>...</b></td>
-                    <td>{{ n.c_time }}</td>
-                    <td>{{ n.created_by.name }}</td>
+                    <td><b>{{ t.name }}</b></td>
+                    <td>{{ t.no.username }}</td>
+                    <td>{{ t.college.name }}</td>
+                    <td>{{ t.position.name}}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="newsDetail(this);">详情</button>
-                        <a href="{% url 'mod_news' n.id %}" target="_parent"><button class="btn btn-default btn-sm">编辑</button></a>
+                        <button class="btn btn-primary btn-sm" onclick="teacherDetail(this);">详情</button>
+                        <button class="btn btn-default btn-sm" onclick="edit(this);">编辑</button>
                         <button onclick="delOne(this)" class="btn btn-danger btn-sm" >删除</button>
+                        <button onclick="resetPwd(this)" class="btn btn-warning btn-sm" >重置密码</button>
                     </td>
                 </tr>
             {% endfor %}
@@ -82,6 +86,8 @@
     </div>
 </div>
 
+
+
 <script>
     $.ajaxSetup({
 　　      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
@@ -91,65 +97,44 @@
         $(".sort-table").tablesorter();
     });
 
+    {#function edit(t) {#}
+    {#    #}
+    {#    #}
+    {#}#}
 
 
-    function newsDetail(t) {
-        window.parent.$('#newsDetail').modal('show');
-        var nid = $(t).parent().parent().attr('nid');
+    function resetPwd(t) {
+        var no = $(t).parent().parent().attr("tno")
         $.ajax({
-            url:'m_news_detail',
-            type: 'GET',
-            dataType: 'JSON',
-            data: {"nid":nid},
+            url:'resetPwd',
+            type:'POST',
+            dataType:"JSON",
+            data:{"no":no},
             success:function (arg) {
-                window.parent.$("#newsDetail h3").html("<b>标题:</b> "+arg[0]);
-                window.parent.$("#newsDetail .content").html("<b>正文:</b><hr \>"+arg[1]);
-                window.parent.$("#newsDetail #c_time").html("<b>创建时间:</b>"+arg[2]+"<hr >");
-                window.parent.$("#newsDetail #created_by").html("<b>创建者:</b>"+arg[3]+"<hr >");
-                window.parent.$("#newsDetail #m_time").html("<b>最后修改时间:</b>"+arg[4]+"<hr >");
-                if(arg[5]==3){
-                    arg[5]="教师";
-                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> "+arg[5]+"<hr >");
-                }else if(arg[5]==2){
-                    arg[2]="学生";
-                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> "+arg[5]+"<hr >");
+                if(arg.status){
+                    alert("密码重置成功！")
                 }else {
-                    arg[5]="所有人";
-                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> "+arg[5]+"<hr >");
-
+                    alert("密码重置失败，请重新尝试！")
                 }
             }
-
         })
-    }
-
-    function SelectAll() {
-        v = $("#select").prop("checked");
-        if(v==true){
-            $(":checkbox").prop("checked",true);
-        }else{
-            $(":checkbox").prop("checked",false);
-        }
-
-
-
     }
 
     function Del() {
 
         var arr = new Array();
         $("input[name='course']:checked").each(function () {
-            arr.push($(this).parent().parent().attr("nid"))
+            arr.push($(this).parent().parent().attr("tno"))
         });
 
         if (arr == '') {
             alert("没有选择任何条目！");
         } else {
             $.ajax({
-                url: 'del_news',
+                url: 'del_teacher',
                 type: 'POST',
                 dataType: "JSON",
-                data: {"nid": arr},
+                data: {"tno": arr},
                 success: function (arg) {
                     if (arg.status==true) {
                         alert("删除成功！");
@@ -162,14 +147,13 @@
         }
     }
 
-
     function delOne(t) {
-        var nid = $(t).parent().parent().attr("nid");
+        var tno = $(t).parent().parent().attr("tno");
         $.ajax({
-            url: 'del_news',
+            url: 'del_teacher',
                 type: 'POST',
                 dataType: "JSON",
-                data: {"nid[]":nid},
+                data: {"tno[]":tno},
                 success: function (arg) {
                     if (arg.status==true) {
                         alert("删除成功！");
@@ -180,7 +164,28 @@
                 }
         })
     }
-</script>
 
+    function teacherDetail(t) {
+        window.parent.$('#teacherDetail').modal('show');
+        var tno = $(t).parent().parent().attr('tno');
+        $.ajax({
+            url:'teacher_detail',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {"tno":tno},
+            success:function (arg) {
+                window.parent.$("#teacherDetail").find("input").each(function (i) {
+                    window.parent.$(this).val(arg[i]);
+
+                })
+            }
+
+        })
+    }
+
+    function Add() {
+        window.parent.$('#addTeacher').modal('show');
+    }
+</script>
 </body>
 </html>
