@@ -1,6 +1,6 @@
 {% extends "edu_base.html" %}
 {% block title %}
-编辑新消息
+修改消息
 {% endblock %}
 
 {% block head %}
@@ -40,7 +40,7 @@
 {% block body %}
     <div class="container">
         <div class="panel panel-default">
-            <div class="panel-heading">发布新消息</div>
+            <div class="panel-heading">修改消息</div>
             <div class="panel-body">
                 <form id="newfm" method="post">
                     {% csrf_token %}
@@ -69,7 +69,7 @@
                     <hr>
                     <div class="btns">
                     <a href="newNews.html"> <button type="button" class="btn btn-default" >取消</button></a>
-                    <button type="button" class="btn btn-primary" onclick="pubNews()">提交</button>
+                    <button type="button" class="btn btn-primary" onclick="editNews()">提交</button>
                         </div>
                 </form>
             </div>
@@ -78,20 +78,20 @@
 
 
 <script>
-$("#nav2").addClass("active");
-function pubNews() {
+$("#nav5").addClass("active");
+function editNews() {
 
             $("#err_title").html("");
             $("#err_content").html("");
             $("#err_msg").html("");
             $.ajax({
-                url: "newNews.html",
+                url: "mod_news.html3",
                 type: "POST",
                 dataType: "json",
                 data: $("#newfm").serialize(),
                 success:function (arg) {
-                    if(arg.status){
-                        window.location.href = "/e/pubNews.html"
+                    if(arg.status==true){
+                        window.location.href = "/e/manageCenter.html"
                     }else {
                         console.log(arg.msg);
                         $("#err_title").html(arg.msg.title);

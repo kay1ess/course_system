@@ -3,9 +3,10 @@ import json
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.models import Group
 from django.core import serializers
+from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import render
-from edu.form import PubForm, NewsForm, SearchForm
+from edu.form import PubForm, NewsForm, SearchForm, NewsSearchForm
 from edu.models import NewCourse, News, EduAdmin
 from student.models import StuSelected
 from teacher.models import AppliedCourse
@@ -69,11 +70,8 @@ def edit_news(request):
     if request.method == "POST":
         ret = {"status":True, "msg":None}
         obj = NewsForm(request.POST)
-        print(EduAdmin.objects.filter(no__username=request.user))
-
         if obj.is_valid():
             try:
-                print(obj.cleaned_data)
                 News.objects.create(
                     title=obj.cleaned_data.get("title"),
                     content=obj.cleaned_data.get("content"),
@@ -138,9 +136,13 @@ def nopass_(request):
         ret["msg"] = "数据库操作失败，请联系系统管理员"
     return HttpResponse(json.dumps(ret))
 
+@login_required
+@user_passes_test(check_group3)
 def manager_center(request):
     return render(request, "manage_center.html")
 
+@login_required
+@user_passes_test(check_group3)
 def m_course(request):
     if request.method == "GET":
         fm = SearchForm()
@@ -168,6 +170,8 @@ def m_course(request):
         else:
             return HttpResponse("输入不符合要求，请重新输入")
 
+@login_required
+@user_passes_test(check_group3)
 def del_course(request):
     if request.method == "POST":
         ret = {"status":True,"msg":"删除成功"}
@@ -183,6 +187,8 @@ def del_course(request):
             ret["msg"] = "删除失败"
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def offline_course(request):
     if request.method == "POST":
         ret = {"status":True,"msg":"下线成功"}
@@ -197,6 +203,8 @@ def offline_course(request):
             ret["msg"] = "下线失败"
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def m_course_detail(request):
     cno = request.GET.get("cno")
     data = []
@@ -213,6 +221,8 @@ def m_course_detail(request):
             data.extend([cour_detail.no,cour_detail.name,float(cour_detail.credit),cour_detail.college.name])
     return HttpResponse(json.dumps(data, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def online_course(request):
     if request.method == "POST":
         ret = {"status":True}
@@ -224,9 +234,89 @@ def online_course(request):
             ret["status"] = False
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
-
+@login_required
+@user_passes_test(check_group3)
 def m_news(request):
-    pass
+    if request.method == "GET":
+        fm = NewsSearchForm()
+        n = News.objects.all()
+        news = n.order_by("m_time")
+        news_r = n.order_by("-m_time")
+        obj = MyPagination(news_r.count(), request.GET.get("p"), 10, url='m_news')
+        data = n[obj.start():obj.end()]
+        return render(request, "m_news.html", locals())
+    if request.method == "POST":
+        fm = NewsSearchForm(request.POST)
+        print(request.POST)
+        if fm.is_valid():
+            content = fm.cleaned_data.get("content")
+            news = News.objects.filter(title__contains=content).order_by("-m_time")
+            obj = MyPagination(news.count(), request.GET.get("p"), 10, url='m_news')
+            data = news[obj.start():obj.end()]
+            return render(request, 'm_news.html', {"data":data, "fm":fm})
+        else:
+            return HttpResponse("输入不符合要求，请重新输入")
+
+@login_required
+@user_passes_test(check_group3)
+def m_news_detail(request):
+    nid = request.GET.get("nid")
+    data = []
+    news = News.objects.filter(id=nid)
+    for n in news:
+        data.extend([n.title,n.content,n.c_time.strftime("%Y-%m-%d-%H-%M"),n.created_by.name,n.m_time.strftime("%Y-%m-%d-%H-%M"),n.watchers.title()])
+
+    return HttpResponse(json.dumps(data, ensure_ascii=False))
+
+@login_required
+@user_passes_test(check_group3)
+def del_news(request):
+    if request.method == "POST":
+        ret = {"status":True,"msg":"删除成功"}
+        try:
+            ls = request.POST.getlist("nid[]")
+            for i in ls:
+                News.objects.filter(id=i).delete()
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "删除失败"
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+@login_required
+@user_passes_test(check_group3)
+def mod_news(request, nid):
+    if request.method == "GET":
+        news = News.objects.get(id=nid)
+        obj = NewsForm({
+            'title':news.title,
+            'content':news.content,
+            'watchers':news.watchers
+        })
+        return render(request,"mod_news.html", locals())
+    if request.method == "POST":
+        ret = {"status":True, "msg":None}
+        obj = NewsForm(request.POST)
+        if obj.is_valid():
+
+            News.objects.filter(id=nid).update(
+                title=obj.cleaned_data.get("title"),
+                content = obj.cleaned_data.get("content"),
+                watchers = obj.cleaned_data.get("watchers")
+            )
+            try:
+                ret["msg"] = "修改成功"
+            except Exception as e:
+                print(e)
+                ret["msg"] = "数据库写入异常，请联系管理员，错误代码:" + str(e)
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        else:
+
+            ret["status"] = False
+            ret["msg"] = obj.errors
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
 
 def m_student(request):
     pass

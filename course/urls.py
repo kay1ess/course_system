@@ -40,6 +40,10 @@ urlpatterns = [
     path('online_course', e_views.online_course),
 
     path('m_news',e_views.m_news),
+    path('m_news_detail', e_views.m_news_detail),
+    path('del_news', e_views.del_news),
+    re_path(r'mod_news.html(?P<nid>\d+)', e_views.mod_news, name="mod_news"),
+
     path('m_student',e_views.m_student),
     path('m_teacher',e_views.m_teacher),
 

@@ -131,6 +131,36 @@
         </div>
     </div>
 
+button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="newsDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"></h3>
+      </div>
+      <div class="panel-body content">
+      </div>
+          <div class="panel-footer">
+              <small id="created_by"></small>
+              <small id="c_time"></small>
+              <small id="m_time"></small>
+              <small id="watcher"></small>
+          </div>
+    </div>
+
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+          <a href="#" ><button type="button" class="btn btn-default">编辑</button></a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
         $("#nav5").addClass("active");

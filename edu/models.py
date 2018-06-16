@@ -57,7 +57,7 @@ class NewCourse(models.Model):
     created_by = models.ForeignKey(EduAdmin, on_delete=models.SET_NULL, null=True)
     ctime = models.DateTimeField(auto_now_add=True)
     #0 新发布 1被申请 2申请通过并上线 3申请拒绝 4下线
-    status = models.IntegerField(max_length=1, default=0)
+    status = models.IntegerField(default=0)
     def __str__(self):
         self.name
 

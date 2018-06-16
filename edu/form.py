@@ -45,6 +45,9 @@ class PubForm(forms.Form):
 
 
 class NewsForm(forms.ModelForm):
+    title = fields.CharField(
+            widget=widgets.TextInput(attrs={"class":"form-control","placeholder":"在此输入标题"})
+            )
     choices = ((1, 'Everyone'),
                (2, 'Teachers'),
                (3, 'Students'),)
@@ -56,6 +59,8 @@ class NewsForm(forms.ModelForm):
     class Meta:
         model = News
         fields = ["title","content","watchers"]
+
+
 
 class LoginForm(forms.Form):
     username = fields.CharField(
@@ -114,5 +119,11 @@ class ChangePwdForm(forms.Form):
 class SearchForm(forms.Form):
     content = fields.CharField(
         widget=widgets.TextInput(attrs={"class":"form-control","placeholder":"请输入课程号或课程名"}),
+        max_length=30
+    )
+
+class NewsSearchForm(forms.Form):
+    content = fields.CharField(
+        widget=widgets.TextInput(attrs={"class":"form-control","placeholder":"请输入新闻标题"}),
         max_length=30
     )
