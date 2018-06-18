@@ -11,13 +11,17 @@
         padding-top: 10px;
     }
 
+    .body-c {
+            margin: 30px 100px;
+        }
+
 </style>
 {% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="content">
-            <div class="content">
+            <div class="body-c">
             <div class="panel panel-warning">
                 <div class="panel-heading">
                 <h2 class="panel-title">待批课程</h2>
@@ -33,10 +37,86 @@
                 {% endif %}
                 </div>
             </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                <h2 class="panel-title">最新发布</h2>
+                </div>
+                <div class="panel-body">
+                    {% for n in news %}
+                    <div class="jumbotron" nid="{{ n.id }}">
+                      <h2>{{ n.title }}</h2>
+                      <p>{{ n.content|striptags|slice:":80" }}...<a href="#" onclick="newsDetail(this)">查看详情</a></p>
+                    <br>
+                    <b>最后修改日期: {{ n.m_time }}</b>
+                        <br \>
+                    <b>发布者: {{ n.created_by }}</b>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
         </div>
     </div>
     </div>
+
+
+    <div class="modal fade" id="newsDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"></h3>
+      </div>
+      <div class="panel-body content">
+      </div>
+          <div class="panel-footer">
+              <small id="created_by"></small>
+              <small id="c_time"></small>
+              <small id="m_time"></small>
+              <small id="watcher"></small>
+          </div>
+    </div>
+
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <script>
         $("#nav1").addClass("active");
+
+
+        function newsDetail(t) {
+        $('#newsDetail').modal('show');
+        var nid = $(t).parent().parent().attr('nid');
+        $.ajax({
+            url:'/m_news_detail',
+            type: 'GET',
+            dataType: 'JSON',
+            data: {"nid":nid},
+            success:function (arg) {
+                $("#newsDetail h3").html("<b>标题:</b> "+arg[0]);
+                $("#newsDetail .content").html("<b>正文:</b><hr \>"+arg[1]);
+                $("#newsDetail #c_time").html("<b>创建时间:</b>"+arg[2]+"<hr >");
+                $("#newsDetail #created_by").html("<b>创建者:</b>"+arg[3]+"<hr >");
+                $("#newsDetail #m_time").html("<b>最后修改时间:</b>"+arg[4]+"<hr >");
+                if(arg[5]==3){
+                    arg[5]="教师";
+                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> "+arg[5]+"<hr >");
+                }else if(arg[5]==2){
+                    arg[5]="学生";
+                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> "+arg[5]+"<hr >");
+                }else {
+                    arg[5]="所有人";
+                    window.parent.$("#newsDetail #watcher").html("<b>可见范围:</b> "+arg[5]+"<hr >");
+
+                }
+            }
+
+        })
+    }
     </script>
 {% endblock %}

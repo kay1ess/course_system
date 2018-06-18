@@ -33,6 +33,8 @@
 </div>
 </form>
 <div class="title-r">
+    <span><a href="/e/newNews.html" target="_parent"><button class="btn-success btn">发布消息</button></a></span>
+
         <span><button class="btn-danger btn" onclick="Del()">删除选中条目</button></span>
     </div>
 
@@ -59,7 +61,7 @@
                     <td><b>{{ n.title|slice:"10" }}</b></td>
                     <td>{{ n.content|striptags|slice:":20" }}<b>...</b></td>
                     <td>{{ n.c_time }}</td>
-                    <td>{{ n.created_by.name }}</td>
+                    <td>{{ n.created_by }}</td>
                     <td>
                         <button class="btn btn-primary btn-sm" onclick="newsDetail(this);">详情</button>
                         <a href="{% url 'mod_news' n.id %}" target="_parent"><button class="btn btn-default btn-sm">编辑</button></a>

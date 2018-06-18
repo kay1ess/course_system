@@ -44,12 +44,17 @@ urlpatterns = [
     path('del_news', e_views.del_news),
     re_path(r'mod_news.html(?P<nid>\d+)', e_views.mod_news, name="mod_news"),
 
-    path('m_student',e_views.m_student),
 
     path('m_teacher',e_views.m_teacher),
     path('del_teacher',e_views.del_teacher),
     path('teacher_detail',e_views.teacher_detail),
     path('editTeacher',e_views.editTeacher),
+
+    path('m_student', e_views.m_student),
+    path('del_student',e_views.del_student),
+    path('student_detail',e_views.student_detail),
+    path('editStudent',e_views.editStudent),
+    path('addStudent', e_views.addStudent),
 
 
 
@@ -74,5 +79,6 @@ urlpatterns = [
 
     path("change_password.html", s_views.change_pwd, name="change_pwd"),
 
-    path("resetPwd",e_views.resetPwd)
+    path("resetPwdTea",e_views.resetPwdTea),
+    path("resetPwdStu",e_views.resetPwdStu)
 ]

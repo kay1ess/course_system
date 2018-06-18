@@ -71,7 +71,7 @@
         </ul>
     </div>
     <div class="nav-right">
-    <iframe id="ifm">
+    <iframe src="/m_course">
 
     </iframe>
     </div>
@@ -171,7 +171,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="myModalLabel">教师详情</h3>
+                    <h3 class="modal-title" id="myModalLabel">增加教师</h3>
                 </div>
                 <div class="modal-body">
                     <form action="manage_center.html" method="post" id="fm">
@@ -230,7 +230,80 @@
                     <div class="modal-footer">
                     <small><b id="err_msg" style="float: left"></b></small>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="pubBtn" onclick="add();">发布</button>
+                    <button type="button" class="btn btn-primary" id="pubBtn" onclick="addT();">发布</button>
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="addStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">增加学生</h3>
+                </div>
+                <div class="modal-body">
+                    <form action="manage_center.html" method="post" id="fm2">
+                        {% csrf_token %}
+                        <div class="form-group">
+
+
+                            <p>
+                                <span>姓名</span>
+                                {{ obj2.name }}
+                                <br>
+                                <small id="errName4"></small></p>
+
+                            <p>
+                                <span>学号</span>
+                                {{ obj2.no }}
+                                <br>
+                                <small id="errNo4"></small></p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ obj2.gender }}
+                                <br>
+                                <small id="errGender4"></small></p>
+
+                            <p>
+                                <span>身份证号</span>
+                                {{ obj2.card_id }}
+                                <br>
+                                <small id="errCardId4"></small></p>
+                            <p>
+                                <span>所属学院</span>
+                                {{ obj2.college_id }}
+                                <br>
+                                <small id="errCollege4"></small></p>
+
+                            <p>
+                                <span>年级</span>
+                            {{ obj2.grade_id }}
+                                <br>
+                                <small id="errGrade4"></small></p>
+                            <p>
+                                <span>电子邮箱</span>
+                            {{ obj2.email }}
+                                <br>
+                                <small id="errEmail4"></small></p>
+                            <p>
+                                <span>电话</span>
+                            {{ obj2.tel }}
+                                <br>
+                                <small id="errTel4"></small></p>
+
+
+                        </div>
+                </form>
+                    <div class="modal-footer">
+                    <small><b id="err_msg4" style="float: left"></b></small>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="pubBtn" onclick="addS();">确定</button>
                 </div>
 
                 </div>
@@ -298,6 +371,65 @@
         </div>
     </div>
 
+<div class="modal fade" id="studentDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">学生详情</h3>
+                </div>
+                <div class="modal-body">
+
+                        <div class="form-group">
+
+
+                            <p>
+                                <span>姓名</span>
+                                <input class="form-control" type="text" disabled name="no">
+                                </p>
+                            <p>
+                            <p>
+                                <span>学号</span>
+                                <input class="form-control" type="text" disabled name="name">
+                                </p>
+                            <p>
+                            <p>
+                                <span>性别</span>
+                                <input class="form-control" type="text" disabled name="gender">
+                                </p>
+                            <p>
+                            <p>
+                                <span>所属学院</span>
+                                <input class="form-control" type="text" disabled name="credit">
+                                </p>
+                            <p>
+                            <p>
+                                <span>年级</span>
+                                <input class="form-control" type="text" disabled name="college">
+                                </p>
+                            <p><p>
+                                <span>电子邮箱</span>
+                                <input class="form-control" type="text" disabled name="teacher">
+                                </p>
+                            <p>
+                                <span>电话</span>
+                                <input class="form-control" type="text" disabled name="classroom">
+
+                                </p>
+                            <p>
+                                <span>生日</span>
+                                <input class="form-control" type="text" disabled name="week">
+
+                               </p>
+
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -316,9 +448,9 @@
                                 <span>姓名</span>
                                 {{ obj.name }}
                                 <br>
-                                <small id="errName"></small></p>
+                                <small id="errName2"></small></p>
 
-                            <p>
+                            <p class="tno-setting">
                                 <span>工号</span>
                                 {{ obj.no }}
                                 <br>
@@ -349,7 +481,7 @@
                             <p>
                                 <span>电子邮箱</span>
                             {{ obj.email }}
-                                <br>2Ω
+                                <br>
                                 <small id="errEmail2"></small></p>
                             <p>
                                 <span>电话</span>
@@ -361,9 +493,81 @@
                         </div>
                 </form>
                     <div class="modal-footer">
-                    <small><b id="err_msg" style="float: left"></b></small>
+                    <small><b id="err_msg2" style="float: left"></b></small>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary"onclick="edit()">确定</button>
+                    <button type="button" class="btn btn-primary"onclick="editT()">确定</button>
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="editStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">修改学生资料</h3>
+                </div>
+                <div class="modal-body">
+                    <form action="editStudent" method="post" id="edit-fm2">
+                        <div class="form-group">
+
+                            {% csrf_token %}
+                                <p>
+                                <span>姓名</span>
+                                {{ obj2.name }}
+                                <br>
+                                <small id="errName3"></small></p>
+
+                            <p class="sno-setting">
+                                <span>学号</span>
+                                {{ obj2.no }}
+                                <br>
+                                <small id="errNo3"></small></p>
+
+                            <p>
+                                <span>性别</span>
+                                {{ obj2.gender }}
+                                <br>
+                                <small id="errGender3"></small></p>
+
+                            <p>
+                                <span>身份证号</span>
+                                {{ obj2.card_id }}
+                                <br>
+                                <small id="errCardId3"></small></p>
+                            <p>
+                                <span>所属学院</span>
+                                {{ obj2.college_id }}
+                                <br>
+                                <small id="errCollege3"></small></p>
+
+                            <p>
+                                <span>年级</span>
+                            {{ obj2.grade_id }}
+                                <br>
+                                <small id="errPos3"></small></p>
+                            <p>
+                                <span>电子邮箱</span>
+                            {{ obj2.email }}
+                                <br>
+                                <small id="errEmail3"></small></p>
+                            <p>
+                                <span>电话</span>
+                            {{ obj2.tel }}
+                                <br>
+                                <small id="errTel3"></small></p>
+
+
+                        </div>
+                </form>
+                    <div class="modal-footer">
+                    <small><b id="err_msg3" style="float: left"></b></small>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary"onclick="editS()">确定</button>
                 </div>
 
                 </div>
@@ -380,9 +584,10 @@
 　　      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
         });
 
-        var i = $(".tno-setting").attr("readonly",true)
+        var i = $(".tno-setting input").attr("readonly",true)
+        var j = $(".sno-setting input").attr("readonly",true)
 
-        function edit() {
+        function editT() {
 
             $("#err_msg2").html("");
             $("#errName2").html("");
@@ -402,7 +607,8 @@
                 success:function (arg) {
                     if(arg.status==true){
                         $("#editTeacher").modal("hide");
-                        window.location.href = "manageCenter.html"
+                        $('iframe').attr('src', $('iframe').attr('src'));
+
                     }else {
                         console.log("failed")
                         console.log(arg.msg.tel)
@@ -412,8 +618,47 @@
                         $("#errCardId2").html(arg.msg.card_id).css("color","red");
                         $("#errCollege2").html(arg.msg.college_id).css("color","red");
                         $("#errPos2").html(arg.msg.position_id).css("color","red");
-                        $("#errEmail").html(arg.msg.email).css("color","red");
+                        $("#errEmail2").html(arg.msg.email).css("color","red");
                         $("#errTel2").html(arg.msg.tel).css("color","red");
+
+                    }
+                }
+            })
+        }
+
+        function editS() {
+
+            $("#err_msg3").html("");
+            $("#errName3").html("");
+            $("#errNo3").html("");
+            $("#errGender3").html("");
+            $("#errCardId3").html("");
+            $("#errCollege3").html("");
+            $("#errPos3").html("");
+            $("#errEmail3").html("");
+            $("#errTel3").html("");
+
+            $.ajax({
+                url: "/editStudent",
+                type: "POST",
+                dataType: "json",
+                data: $("#edit-fm2").serialize(),
+                success:function (arg) {
+                    if(arg.status==true){
+                        $("#editStudent").modal("hide");
+                        $('iframe').attr('src', $('iframe').attr('src'));
+
+                    }else {
+                        console.log("failed")
+
+                       $("#err_msg3").html(arg.msg).css("color","red");
+                        $("#errName3").html(arg.msg.name).css("color","red");
+                        $("#errGender3").html(arg.msg.gender).css("color","red");
+                        $("#errCardId3").html(arg.msg.card_id).css("color","red");
+                        $("#errCollege3").html(arg.msg.college_id).css("color","red");
+                        $("#errGrade3").html(arg.msg.grade_id).css("color","red");
+                        $("#errEmail3").html(arg.msg.email).css("color","red");
+                        $("#errTel3").html(arg.msg.tel).css("color","red");
 
                     }
                 }
@@ -454,7 +699,7 @@
 
         }
 
-        function add() {
+        function addT() {
             $("#err_msg").html("");
             $("#errName").html("");
             $("#errNo").html("");
@@ -471,8 +716,9 @@
                 data: $("#fm").serialize(),
                 success:function (arg) {
                     if(arg.status==true){
-                        $("#addModal").modal("hide");
-                        window.location.reload();
+                        $("#addTeacher").modal("hide");
+                        $('iframe').attr('src', $('iframe').attr('src'));
+
                     }else{
                         console.log("失败");
                         $("#err_msg").html(arg.msg).css("color","red");
@@ -484,6 +730,44 @@
                         $("#errPos").html(arg.msg.position_id).css("color","red");
                         $("#errEmail").html(arg.msg.email).css("color","red");
                         $("#errTel").html(arg.msg.tel).css("color","red");
+
+                    }
+                }
+
+            })
+        }
+
+        function addS() {
+            $("#err_msg4").html("");
+            $("#errName4").html("");
+            $("#errNo4").html("");
+            $("#errGender4").html("");
+            $("#errCardId4").html("");
+            $("#errCollege4").html("");
+            $("#errGrade4").html("");
+            $("#errEmail4").html("");
+            $("#errTel4").html("");
+            $.ajax({
+                url:'/addStudent',
+                type: "POST",
+                dataType: "JSON",
+                data: $("#fm2").serialize(),
+                success:function (arg) {
+                    if(arg.status==true){
+                        $("#addStudent").modal("hide");
+                            $('iframe').attr('src', $('iframe').attr('src'));
+
+                    }else{
+                        console.log("失败");
+                        $("#err_msg4").html(arg.msg).css("color","red");
+                        $("#errName4").html(arg.msg.name).css("color","red");
+                        $("#errNo4").html(arg.msg.no).css("color","red");
+                        $("#errGender4").css("color","red").html(arg.msg.gender).css("color","red");
+                        $("#errCardId4").html(arg.msg.card_id).css("color","red");
+                        $("#errCollege4").html(arg.msg.college_id).css("color","red");
+                        $("#errGrade4").html(arg.msg.grade_id).css("color","red");
+                        $("#errEmail4").html(arg.msg.email).css("color","red");
+                        $("#errTel4").html(arg.msg.tel).css("color","red");
 
                     }
                 }

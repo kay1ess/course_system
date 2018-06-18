@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms import fields, widgets
-from edu.models import College, News, Position
+from edu.models import College, News, Position, Grade
 
 
 class PubForm(forms.Form):
@@ -130,9 +130,14 @@ class TeacherSearchForm(forms.Form):
         widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入姓名或工号"}),
     )
 
+class StudentSearchForm(forms.Form):
+    content = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入姓名或学号"}),
+    )
+
 class AddTeacher(forms.Form):
     no = fields.CharField(
-        widget=widgets.TextInput(attrs={"class":"form-control tno-setting","placeholder":"请输入工号"}),
+        widget=widgets.TextInput(attrs={"class":"form-control ","placeholder":"请输入工号"}),
         validators=[RegexValidator(r'\d{8}')]
     )
     name = fields.CharField(
@@ -142,7 +147,7 @@ class AddTeacher(forms.Form):
         (1,'男'),
         (2,'女'),
     )
-    gender = fields.BooleanField(
+    gender = fields.IntegerField(
         widget=widgets.Select(choices=choices),
 
     )
@@ -173,3 +178,47 @@ class AddTeacher(forms.Form):
         super(AddTeacher, self).__init__(*args, **kwargs)
         self.fields['college_id'].widget.choices = College.objects.values_list("id", "name")
         self.fields['position_id'].widget.choices = Position.objects.values_list("id", "name")
+
+class AddStudent(forms.Form):
+    no = fields.CharField(
+        widget=widgets.TextInput(attrs={"class":"form-control ","placeholder":"请输入学号"}),
+        validators=[RegexValidator(r'\d{8}')]
+    )
+    name = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入姓名"}),
+    )
+    choices = (
+        (1,'男'),
+        (2,'女'),
+    )
+    gender = fields.IntegerField(
+        widget=widgets.Select(choices=choices),
+
+    )
+    card_id = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入身份证号"}),
+        validators=[RegexValidator(r'\d{18}')]
+    )
+
+    grade_id = fields.IntegerField(widget=widgets.Select())
+
+    college_id = fields.IntegerField(widget=widgets.Select())
+
+    email = fields.EmailField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入电子邮件"}),
+
+    )
+
+    tel = fields.CharField(
+        widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入电话号"}),
+        validators=[RegexValidator(r'\d{11}')]
+
+    )
+
+
+
+
+    def __init__(self, *args, **kwargs):
+        super(AddStudent, self).__init__(*args, **kwargs)
+        self.fields['college_id'].widget.choices = College.objects.values_list("id", "name")
+        self.fields['grade_id'].widget.choices = Grade.objects.values_list("id", "name")

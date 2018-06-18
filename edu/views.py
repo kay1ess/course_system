@@ -2,13 +2,12 @@ import json
 
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.models import Group, User
-from django.core import serializers
-from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import render
-from edu.form import PubForm, NewsForm, SearchForm, NewsSearchForm, TeacherSearchForm, AddTeacher
+from edu.form import PubForm, NewsForm, SearchForm, NewsSearchForm, TeacherSearchForm, AddTeacher, StudentSearchForm, \
+    AddStudent
 from edu.models import NewCourse, News, EduAdmin
-from student.models import StuSelected
+from student.models import StuSelected, Student
 from teacher.models import AppliedCourse, Teacher
 from course.ulti import MyPagination
 
@@ -25,6 +24,7 @@ def check_group3(user):
 def index(request):
     app_list = AppliedCourse.objects.filter(status='None')
     apps = app_list.count()
+    news = News.objects.all().order_by('m_time')
     return render(request, "edu_index.html", locals())
 
 @login_required
@@ -141,6 +141,7 @@ def nopass_(request):
 def manager_center(request):
     if request.method == "GET":
         obj = AddTeacher()
+        obj2 = AddStudent()
         return render(request, "manage_center.html", locals())
     if request.method == "POST":
         ret = {"status":True,"msg":None}
@@ -217,7 +218,7 @@ def m_course(request):
                 cours_r = NewCourse.objects.filter(name__contains=content).order_by("-ctime")
                 obj = MyPagination(cours_r.count(), request.GET.get("p"), 10, url='m_course')
                 data = cours_r[obj.start():obj.end()]
-            return render(request, 'm_course.html', {"data":data, "fm":fm})
+            return render(request, 'm_course.html', {"data":data, "fm":fm,"obj":obj})
         else:
             return HttpResponse("输入不符合要求，请重新输入")
 
@@ -308,8 +309,7 @@ def m_news(request):
         else:
             return HttpResponse("输入不符合要求，请重新输入")
 
-@login_required
-@user_passes_test(check_group3)
+
 def m_news_detail(request):
     nid = request.GET.get("nid")
     data = []
@@ -369,9 +369,170 @@ def mod_news(request, nid):
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
-
+@login_required
+@user_passes_test(check_group3)
 def m_student(request):
-    pass
+    if request.method == "GET":
+        fm = StudentSearchForm()
+        s = Student.objects.all()
+        obj = MyPagination(s.count(), request.GET.get("p"), 10, url='m_student')
+        students = s[obj.start():obj.end()]
+        return render(request, "m_student.html", {"students":students,"obj":obj,"fm":fm})
+    if request.method == "POST":
+        fm = StudentSearchForm(request.POST)
+        if fm.is_valid():
+            content = fm.cleaned_data.get("content")
+            if content.isdigit():
+                s = Student.objects.filter(no__username__contains=content)
+                obj = MyPagination(s.count(), request.GET.get("p"), 10, url='m_student',)
+                students = s[obj.start():obj.end()]
+
+            else:
+                s = Student.objects.filter(name__contains=content)
+                obj = MyPagination(s.count(), request.GET.get("p"), 10, url='m_student')
+                students = s[obj.start():obj.end()]
+            return render(request, 'm_student.html', {"students":students, "fm":fm,"obj":obj})
+        else:
+            return HttpResponse("输入不符合要求，请重新输入")
+
+def del_student(request):
+    if request.method == "POST":
+        ret = {"status":True,"msg":"删除成功"}
+        try:
+            ls = request.POST.getlist("sno[]")
+            for i in ls:
+                User.objects.filter(username=i).delete()
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "删除失败"
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+def student_detail(request):
+    sno = request.GET.get("sno")
+    data = []
+    students = Student.objects.filter(no__username=sno)
+
+    for student in students:
+        if student.gender:
+            student.gender = "男"
+        else:
+            student.gender = "女"
+        data.extend([student.name, student.no.username, student.gender, student.college.name,
+                     student.grade.name,
+                     student.email,
+                     student.tel, student.birth
+                     ])
+    return HttpResponse(json.dumps(data, ensure_ascii=False))
+
+def editStudent(request):
+    if request.method == "GET":
+        sno = request.GET.get("sno")
+        data = []
+        student = Student.objects.get(no__username=sno)
+        if student.gender:
+            student.gender = 1
+        else:
+            student.gender = 2
+        data.extend(['',student.name,student.no.username,student.gender,student.card_id,student.college_id,
+                     student.grade_id,
+                     student.email,
+                     student.tel])
+        print(data)
+        return HttpResponse(json.dumps(data, ensure_ascii=False))
+
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        obj = AddStudent(request.POST)
+        print(request.POST)
+
+        if obj.is_valid():
+            try:
+                no = obj.cleaned_data.get("no")
+                name = obj.cleaned_data.get("name")
+                gender = obj.cleaned_data.get("gender")
+                card_id = obj.cleaned_data.get("card_id")
+                college_id = obj.cleaned_data.get("college_id")
+                grade_id = obj.cleaned_data.get("grade_id")
+                email = obj.cleaned_data.get("email")
+                tel = obj.cleaned_data.get("tel")
+
+
+                if gender != 1:
+                    gender = 0
+
+
+                Student.objects.filter(no__username=no).update(
+                    name=name,
+                    gender=gender,
+                    card_id=card_id,
+                    college_id=college_id,
+                    grade_id=grade_id,
+                    email=email,
+                    tel=tel,
+                    birth=card_id[6:12]
+                )
+                ret["msg"] = "修改成功"
+
+            except Exception as e:
+                print(str(e))
+                ret["status"] = False
+                ret["msg"] = "数据库写入异常，请联系管理员，错误代码:" + str(e)
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+        else:
+            ret["status"] = False
+            ret["msg"] = obj.errors
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+def addStudent(request):
+    if request.method == "POST":
+        ret = {"status":True,"msg":None}
+        obj = AddStudent(request.POST)
+        if obj.is_valid():
+            try:
+                no = obj.cleaned_data.get("no")
+                name = obj.cleaned_data.get("name")
+                gender = obj.cleaned_data.get("gender")
+                card_id = obj.cleaned_data.get("card_id")
+                college_id = obj.cleaned_data.get("college_id")
+                grade_id = obj.cleaned_data.get("grade_id")
+                email = obj.cleaned_data.get("email")
+                tel = obj.cleaned_data.get("tel")
+
+
+                User.objects.create(username=no,password=card_id[12:18])
+                user =  User.objects.filter(username=no).first()
+                no_id = user.id
+                if gender == 2:
+                    gender = 0
+                Student.objects.create(
+                    no_id=no_id,
+                    name=name,
+                    gender=gender,
+                    card_id=card_id,
+                    grade_id=grade_id,
+                    college_id=college_id,
+                    email=email,
+                    tel=tel,
+                    birth=card_id[6:12]
+                )
+                user.groups.add(1)
+
+                ret["msg"] = "创建成功"
+
+            except Exception as e:
+                ret["status"] = False
+
+                if str(e) == "UNIQUE constraint failed: teacher_teacher.no_id":
+                    ret["msg"] = "学号已经被使用，请重写填写"
+                else:
+                    ret["msg"] = "数据库写入异常，请联系管理员，错误代码:"+str(e)
+            return HttpResponse(json.dumps(ret))
+        else:
+            ret["status"] = False
+            ret["msg"] = obj.errors
+            return  HttpResponse(json.dumps(ret))
 
 def m_teacher(request):
     if request.method == "GET":
@@ -393,9 +554,10 @@ def m_teacher(request):
                 t = Teacher.objects.filter(name__contains=content)
                 obj = MyPagination(t.count(), request.GET.get("p"), 10, url='m_teacher')
                 teachers = t[obj.start():obj.end()]
-            return render(request, 'm_teacher.html', {"teachers":teachers, "fm":fm})
+            return render(request, 'm_teacher.html', {"teachers":teachers, "fm":fm,"obj":obj})
         else:
             return HttpResponse("输入不符合要求，请重新输入")
+
 def del_teacher(request):
     if request.method == "POST":
         ret = {"status":True,"msg":"删除成功"}
@@ -435,7 +597,7 @@ def editTeacher(request):
         if teacher.gender:
             teacher.gender = 1
         else:
-            teacher.gender = 0
+            teacher.gender = 2
         data.extend(['',teacher.name,teacher.no.username,teacher.gender,teacher.card_id,teacher.college_id,
                          teacher.position_id,
                          teacher.email,
@@ -483,7 +645,7 @@ def editTeacher(request):
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
-def resetPwd(request):
+def resetPwdTea(request):
     if request.method == "POST":
         ret = {"status":True, "msg":None}
         no = request.POST.get("no")
@@ -491,6 +653,7 @@ def resetPwd(request):
             card_id = Teacher.objects.get(no__username=no).card_id
             user = User.objects.get(username=no)
             user.set_password(raw_password=card_id[12:18])
+            user.save()
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
         except Exception as e:
@@ -498,3 +661,22 @@ def resetPwd(request):
             ret["status"] = False
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+
+def resetPwdStu(request):
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        no = request.POST.get("no")
+        try:
+            card_id = Student.objects.get(no__username=no).card_id
+            print(no)
+            user = User.objects.get(username=no)
+            print(user.username)
+            print(card_id[12:18])
+            user.set_password(raw_password=card_id[12:18])
+            user.save()
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            return HttpResponse(json.dumps(ret, ensure_ascii=False))

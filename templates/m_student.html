@@ -48,31 +48,31 @@
                 <tr>
                     <td><input type="checkbox" onclick="SelectAll()" id="select"><small>全选</small></td>
                     <th>姓名</th>
-                    <th>工号</th>
+                    <th>学号</th>
                     <th>性别</th>
                     <th>学院</th>
-                    <th>职位</th>
+                    <th>年级</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-            {% if teachers %}
-            {% for t in teachers %}
-                <tr class="first-tr" tno ="{{ t.no.username }}">
+            {% if students %}
+            {% for s in students %}
+                <tr class="first-tr" sno ="{{ s.no.username }}">
                     <td><input type="checkbox" name="course"></td>
-                    <td><b>{{ t.name }}</b></td>
-                    <td>{{ t.no.username }}</td>
-                     <td>
-                        {% if t.gender == 1%}
+                    <td><b>{{ s.name }}</b></td>
+                    <td>{{ s.no.username }}</td>
+                    <td>
+                        {% if s.gender == 1%}
                         男
                         {% else %}
                         女
                         {% endif %}
                     </td>
-                    <td>{{ t.college.name }}</td>
-                    <td>{{ t.position.name}}</td>
+                    <td>{{ s.college.name }}</td>
+                    <td>{{ s.grade.name }}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" onclick="teacherDetail(this);">详情</button>
+                        <button class="btn btn-primary btn-sm" onclick="studentDetail(this);">详情</button>
                         <button class="btn btn-default btn-sm" onclick="edit(this);">编辑</button>
                         <button onclick="delOne(this)" class="btn btn-danger btn-sm" >删除</button>
                         <button onclick="resetPwd(this)" class="btn btn-warning btn-sm" >重置密码</button>
@@ -106,18 +106,20 @@
     });
 
     function edit(t) {
-        window.parent.$('#editTeacher').modal('show');
-        var tno = $(t).parent().parent().attr('tno');
+        window.parent.$('#editStudent').modal('show');
+        var sno = $(t).parent().parent().attr('sno');
         $.ajax({
-            url:'editTeacher',
+            url:'editStudent',
             dataType:'JSON',
             type:'GET',
-            data:{"tno":tno},
+            data:{"sno":sno},
             success:function (arg) {
-                window.parent.$("#editTeacher #id_name").attr("value",arg[1])
-                window.parent.$("#editTeacher #id_no").attr("value",arg[2])
 
-                var gender = window.parent.$("#editTeacher #id_gender option")
+
+                window.parent.$("#editStudent #id_name").attr("value",arg[1])
+                window.parent.$("#editStudent #id_no").attr("value",arg[2])
+
+                var gender = window.parent.$("#editStudent #id_gender option")
                 for(var i=0;i<gender.length;i++){
                     {#console.log(gender.eq(i).attr("value"))#}
                     if(gender.eq(i).attr("value")==arg[3]){
@@ -125,26 +127,26 @@
                     }
                 }
 
+                window.parent.$("#editStudent #id_gender option:selected")
+                window.parent.$("#editStudent #id_card_id").attr("value",arg[4]);
 
-                window.parent.$("#editTeacher #id_card_id").attr("value",arg[4])
-
-                var college = window.parent.$("#editTeacher #id_college_id option")
+                var college = window.parent.$("#editStudent #id_college_id option")
                 for(var i=0;i<college.length;i++){
                     if(college.eq(i).attr("value")==arg[5]){
                         college.eq(i).attr("selected",true)
                     }
                 }
 
-
-                var position = window.parent.$("#editTeacher #id_position_id option")
-                for(var i=0;i<position.length;i++){
-                    if(position.eq(i).attr("value")==arg[6]){
-                        position.eq(i).attr("selected",true)
+                var grade = window.parent.$("#editStudent #id_grade_id option");
+                for(var i=0;i<grade.length;i++) {
+                    if(grade.eq(i).attr("value")==arg[6]){
+                        grade.eq(i).attr("selected",true)
                     }
                 }
 
-                window.parent.$("#editTeacher #id_email").attr("value",arg[7])
-                window.parent.$("#editTeacher #id_tel").attr("value",arg[8])
+
+                window.parent.$("#editStudent #id_email").attr("value",arg[7])
+                window.parent.$("#editStudent #id_tel").attr("value",arg[8])
             }
         })
 
@@ -154,7 +156,7 @@
     function resetPwd(t) {
         var no = $(t).parent().parent().attr("tno")
         $.ajax({
-            url:'resetPwdTea',
+            url:'resetPwdStu',
             type:'POST',
             dataType:"JSON",
             data:{"no":no},
@@ -172,17 +174,17 @@
 
         var arr = new Array();
         $("input[name='course']:checked").each(function () {
-            arr.push($(this).parent().parent().attr("tno"))
+            arr.push($(this).parent().parent().attr("sno"))
         });
 
         if (arr == '') {
             alert("没有选择任何条目！");
         } else {
             $.ajax({
-                url: 'del_teacher',
+                url: 'del_student',
                 type: 'POST',
                 dataType: "JSON",
-                data: {"tno": arr},
+                data: {"sno": arr},
                 success: function (arg) {
                     if (arg.status==true) {
                         alert("删除成功！");
@@ -196,12 +198,12 @@
     }
 
     function delOne(t) {
-        var tno = $(t).parent().parent().attr("tno");
+        var sno = $(t).parent().parent().attr("sno");
         $.ajax({
-            url: 'del_teacher',
+            url: 'del_student',
                 type: 'POST',
                 dataType: "JSON",
-                data: {"tno[]":tno},
+                data: {"sno[]":sno},
                 success: function (arg) {
                     if (arg.status==true) {
                         alert("删除成功！");
@@ -213,26 +215,29 @@
         })
     }
 
-    function teacherDetail(t) {
-        window.parent.$('#teacherDetail').modal('show');
-        var tno = $(t).parent().parent().attr('tno');
+
+
+    function Add() {
+        window.parent.$('#addStudent').modal('show');
+    }
+
+
+    function studentDetail(t) {
+        window.parent.$('#studentDetail').modal('show');
+        var sno = $(t).parent().parent().attr('sno');
         $.ajax({
-            url:'teacher_detail',
+            url:'student_detail',
             type: 'GET',
             dataType: 'JSON',
-            data: {"tno":tno},
+            data: {"sno":sno},
             success:function (arg) {
-                window.parent.$("#teacherDetail").find("input").each(function (i) {
+                window.parent.$("#studentDetail").find("input").each(function (i) {
                     window.parent.$(this).val(arg[i]);
 
                 })
             }
 
         })
-    }
-
-    function Add() {
-        window.parent.$('#addTeacher').modal('show');
     }
 
      function SelectAll() {
@@ -242,9 +247,6 @@
         }else{
             $(":checkbox").prop("checked",false);
         }
-
-
-
     }
 </script>
 </body>
