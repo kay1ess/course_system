@@ -24,7 +24,7 @@ def check_group3(user):
 def index(request):
     app_list = AppliedCourse.objects.filter(status='None')
     apps = app_list.count()
-    news = News.objects.all().order_by('m_time')
+    news = News.objects.all().order_by("-m_time","-c_time")[:5]
     return render(request, "edu_index.html", locals())
 
 @login_required
@@ -33,7 +33,9 @@ def pub_course(request):
     if request.method == "GET":
         courses = NewCourse.objects.all().order_by('-ctime')
         pub_form = PubForm()
-        return render(request,"pubCourse.html", {"pub_form":pub_form, "courses":courses})
+        obj = MyPagination(courses.count(), request.GET.get('p'),10, url='pubCourse.html')
+        courses = courses[obj.start():obj.end()]
+        return render(request,"pubCourse.html", {"pub_form":pub_form, "courses":courses, "obj":obj})
     if request.method == "POST":
         ret = {"status":True, "msg":None}
         pub_form = PubForm(request.POST)
@@ -101,7 +103,7 @@ def pass_(request):
     ret = {"status":True,"msg":"该课程审批通过！"}
     try:
         no = request.GET.get('clsNo')
-        AppliedCourse.objects.filter(np=no).update(status=True)
+        AppliedCourse.objects.filter(no=no).update(status=True)
         c = AppliedCourse.objects.filter(no=no).first()
         StuSelected.objects.create(
             no=c.no,
@@ -138,6 +140,31 @@ def nopass_(request):
 
 @login_required
 @user_passes_test(check_group3)
+def info(request):
+    edu = EduAdmin.objects.get(no__username=request.user)
+    return render(request, "edu_info.html", {"edu":edu})
+
+@login_required
+@user_passes_test(check_group3)
+def editEdu(request):
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        print(request.POST)
+        no = request.POST.get("no")
+        try:
+            EduAdmin.objects.filter(no__username=no).update(
+                tel=request.POST.get("tel"),
+                email=request.POST.get("email")
+            )
+            ret["msg"] = "修改成功"
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "修改失败"
+        return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+@login_required
+@user_passes_test(check_group3)
 def manager_center(request):
     if request.method == "GET":
         obj = AddTeacher()
@@ -159,7 +186,7 @@ def manager_center(request):
 
 
 
-                User.objects.create(username=no,password=card_id[12:18])
+                User.objects.create_user(username=no,password=card_id[12:18])
                 user =  User.objects.filter(username=no).first()
                 no_id = user.id
                 if gender == 2:
@@ -190,8 +217,6 @@ def manager_center(request):
             ret["status"] = False
             ret["msg"] = obj.errors
             return  HttpResponse(json.dumps(ret))
-
-
 
 @login_required
 @user_passes_test(check_group3)
@@ -315,7 +340,7 @@ def m_news_detail(request):
     data = []
     news = News.objects.filter(id=nid)
     for n in news:
-        data.extend([n.title,n.content,n.c_time.strftime("%Y-%m-%d-%H-%M"),n.created_by.name,n.m_time.strftime("%Y-%m-%d-%H-%M"),n.watchers.title()])
+        data.extend([n.title,n.content,n.c_time.strftime("%Y/%m/%d %H:%M"),n.created_by.name,n.m_time.strftime("%Y/%m/%d %H:%M"),n.watchers.title()])
 
     return HttpResponse(json.dumps(data, ensure_ascii=False))
 
@@ -395,6 +420,8 @@ def m_student(request):
         else:
             return HttpResponse("输入不符合要求，请重新输入")
 
+@login_required
+@user_passes_test(check_group3)
 def del_student(request):
     if request.method == "POST":
         ret = {"status":True,"msg":"删除成功"}
@@ -409,6 +436,8 @@ def del_student(request):
             ret["msg"] = "删除失败"
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def student_detail(request):
     sno = request.GET.get("sno")
     data = []
@@ -426,6 +455,8 @@ def student_detail(request):
                      ])
     return HttpResponse(json.dumps(data, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def editStudent(request):
     if request.method == "GET":
         sno = request.GET.get("sno")
@@ -485,6 +516,8 @@ def editStudent(request):
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def addStudent(request):
     if request.method == "POST":
         ret = {"status":True,"msg":None}
@@ -501,7 +534,7 @@ def addStudent(request):
                 tel = obj.cleaned_data.get("tel")
 
 
-                User.objects.create(username=no,password=card_id[12:18])
+                User.objects.create_user(username=no,password=card_id[12:18])
                 user =  User.objects.filter(username=no).first()
                 no_id = user.id
                 if gender == 2:
@@ -534,6 +567,8 @@ def addStudent(request):
             ret["msg"] = obj.errors
             return  HttpResponse(json.dumps(ret))
 
+@login_required
+@user_passes_test(check_group3)
 def m_teacher(request):
     if request.method == "GET":
         fm = TeacherSearchForm()
@@ -558,6 +593,8 @@ def m_teacher(request):
         else:
             return HttpResponse("输入不符合要求，请重新输入")
 
+@login_required
+@user_passes_test(check_group3)
 def del_teacher(request):
     if request.method == "POST":
         ret = {"status":True,"msg":"删除成功"}
@@ -572,6 +609,8 @@ def del_teacher(request):
             ret["msg"] = "删除失败"
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def teacher_detail(request):
     tno = request.GET.get("tno")
     data = []
@@ -589,6 +628,8 @@ def teacher_detail(request):
                      ])
     return HttpResponse(json.dumps(data, ensure_ascii=False))
 
+@login_required
+@user_passes_test(check_group3)
 def editTeacher(request):
     if request.method == "GET":
         tno = request.GET.get("tno")
@@ -644,7 +685,8 @@ def editTeacher(request):
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
-
+@login_required
+@user_passes_test(check_group3)
 def resetPwdTea(request):
     if request.method == "POST":
         ret = {"status":True, "msg":None}
@@ -661,11 +703,13 @@ def resetPwdTea(request):
             ret["status"] = False
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
-
+@login_required
+@user_passes_test(check_group3)
 def resetPwdStu(request):
     if request.method == "POST":
         ret = {"status": True, "msg": None}
         no = request.POST.get("no")
+
         try:
             card_id = Student.objects.get(no__username=no).card_id
             print(no)

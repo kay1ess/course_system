@@ -43,7 +43,7 @@
                     {% for n in news %}
                     <div class="jumbotron" nid="{{ n.id }}">
                       <h2>{{ n.title }}</h2>
-                      <p>{{ n.content|safe|truncatewords:"60" }}...<a href="#" onclick="newsDetail(this)">查看详情</a></p>
+                      <p>{{ n.content|striptags|slice:":80" }}...<a href="#" onclick="newsDetail(this)">查看详情</a></p>
                     <br>
                     <b>最后修改日期: {{ n.m_time }}</b>
                     </div>

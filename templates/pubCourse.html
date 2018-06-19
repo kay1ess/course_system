@@ -67,12 +67,16 @@
                                 <td>{{ cour.college.name }}</td>
                                 <td>{{ cour.credit }}</td>
                                 <td>{{ cour.ctime}}</td>
-                                {% if cour.status == None %}
+                                {% if cour.status == 0 %}
                                     <td>已发布</td>
-                                    {% elif cour.status == True %}
-                                    <td style="color: forestgreen">已被申请待审批</td>
+                                    {% elif cour.status == 1 %}
+                                    <td style="color: forestgreen">已被申请</td>
+                                    {% elif cour.status == 2 %}
+                                    <td style="color: greenyellow">申请通过已上线</td>
+                                    {% elif cour.status == 3 %}
+                                    <td style="color: red">申请未通过</td>
                                     {% else %}
-                                    <td style="color: palevioletred">已被审批</td>
+                                    <td style="color: #1f292e">课程已下线</td>
 
                                 {% endif %}
                                 <td>{{ cour.created_by.name }}</td>
@@ -85,6 +89,11 @@
 
                 </tbody>
             </table>
+            <ul class="pagination">
+            <li>
+            {{ obj.page_range_str|safe }}
+            </li>
+          </ul>
         </div>
 
     </div>

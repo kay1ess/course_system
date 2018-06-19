@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'edu.apps.EduConfig',
     'student',
     'teacher',
-    'patch',
+    'patch.apps.PatchConfig',
 
 ]
 

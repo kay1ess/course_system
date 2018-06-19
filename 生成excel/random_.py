@@ -137,7 +137,7 @@ def t_e_excel(t_e,p):
 
 if __name__ == '__main__':
 
-	student_excel(8000);
-	t_e_excel('teacher',100)
-	t_e_excel('edu',20)
+	student_excel(1000);
+	t_e_excel('teacher',10)
+	t_e_excel('edu',3)
 	print('Done!')

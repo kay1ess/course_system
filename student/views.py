@@ -58,7 +58,8 @@ def courses(request):
 @login_required
 @user_passes_test(check_group1)
 def info(request):
-    pass
+    student = Student.objects.get(no__username=request.user)
+    return render(request, "s_info.html", {"student":student})
 
 @login_required
 @user_passes_test(check_group1)
@@ -210,3 +211,24 @@ def change_pwd(request):
             ret["status"] = "form_failed"
             ret["msg"] = obj.errors
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+@login_required
+@user_passes_test(check_group1)
+def editStudent(request):
+
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        print(request.POST)
+        no = request.POST.get("no")
+        try:
+            Student.objects.filter(no__username=no).update(
+                tel=request.POST.get("tel"),
+                email=request.POST.get("email")
+            )
+            ret["msg"] = "修改成功"
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "修改失败"
+        return HttpResponse(json.dumps(ret, ensure_ascii=False))

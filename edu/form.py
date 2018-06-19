@@ -153,7 +153,7 @@ class AddTeacher(forms.Form):
     )
     card_id = fields.CharField(
         widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入身份证号"}),
-        validators=[RegexValidator(r'\d{18}')]
+        validators=[RegexValidator(r'\d{17}(\d|X)')]
     )
 
     position_id = fields.IntegerField(widget=widgets.Select())
@@ -197,7 +197,7 @@ class AddStudent(forms.Form):
     )
     card_id = fields.CharField(
         widget=widgets.TextInput(attrs={"class": "form-control", "placeholder": "请输入身份证号"}),
-        validators=[RegexValidator(r'\d{18}')]
+        validators=[RegexValidator(r'\d{17}(\d|X)')]
     )
 
     grade_id = fields.IntegerField(widget=widgets.Select())

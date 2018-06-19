@@ -63,7 +63,7 @@ def app_course(request):
                     teacher_id=teacher_id
                                                     )
                 NewCourse.objects.filter(no=obj.cleaned_data.get("no")).update(status=1)
-
+                print(obj.cleaned_data.get("no")+"申请成功")
                 ret["msg"] = "申请成功"
             except Exception as e:
 
@@ -107,5 +107,27 @@ def teach_plan(request):
 @login_required
 @user_passes_test(check_group2)
 def info(request):
-    pass
+    teacher = Teacher.objects.get(no__username=request.user)
+    return render(request, "t_info.html", {"teacher": teacher})
+
+
+@login_required
+@user_passes_test(check_group2)
+def editTeacher(request):
+
+    if request.method == "POST":
+        ret = {"status": True, "msg": None}
+        print(request.POST)
+        no = request.POST.get("no")
+        try:
+            Teacher.objects.filter(no__username=no).update(
+                tel=request.POST.get("tel"),
+                email=request.POST.get("email")
+            )
+            ret["msg"] = "修改成功"
+        except Exception as e:
+            print(str(e))
+            ret["status"] = False
+            ret["msg"] = "修改失败"
+        return HttpResponse(json.dumps(ret, ensure_ascii=False))
 

@@ -1,4 +1,4 @@
-{% extends "t_base.html" %}
+{% extends "s_base.html" %}
 
 {% block title %}
 个人中心
@@ -36,11 +36,11 @@
             <tbody>
                 <tr>
                     <th>姓名</th>
-                    <td>{{ teacher.name }}</td>
+                    <td>{{ student.name }}</td>
                 </tr>
             <tr>
                     <th>性别</th>
-                    <td>{% if teacher.gender %}
+                    <td>{% if student.gender %}
                         男
                         {% else %}
                         女
@@ -50,27 +50,27 @@
                 </tr>
                  <tr>
                     <th>身份证号</th>
-                    <td>{{ teacher.card_id }}</td>
+                    <td>{{ student.card_id }}</td>
                 </tr>
             <tr>
-                    <th>工号</th>
-                    <td>{{ teacher.no }}</td>
+                    <th>学号</th>
+                    <td>{{ student.no }}</td>
                 </tr>
             <tr>
-                    <th>职位</th>
-                    <td>{{ teacher.position }}</td>
+                    <th>年级</th>
+                    <td>{{ student.grade.name }}</td>
                 </tr>
             <tr>
                     <th>学院</th>
-                    <td>{{ teacher.college.name }}</td>
+                    <td>{{ student.college.name }}</td>
                 </tr>
             <tr>
                     <th>电子邮箱</th>
-                    <td>{{ teacher.email }}</td>
+                    <td>{{ student.email }}</td>
                 </tr>
             <tr>
                     <th>电话号码</th>
-                    <td>{{ teacher.tel }}</td>
+                    <td>{{ student.tel }}</td>
                 </tr>
 
 
@@ -85,7 +85,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="editStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -100,20 +100,20 @@
                             {% csrf_token %}
                                 <p>
                                 <span>姓名</span>
-                                <input type="text" class="form-control" value="{{ teacher.name }}" readonly>
+                                <input type="text" class="form-control" value="{{ student.name }}" readonly>
                                 <br>
                                 <small id="errName3"></small></p>
 
                             <p class="sno-setting">
-                                <span>工号</span>
-                                <input name="no" type="text" class="form-control" value="{{ teacher.no }}" readonly>
+                                <span>学号</span>
+                                <input name="no" type="text" class="form-control" value="{{ student.no }}" readonly>
 
                                 <br>
                                 <small id="errNo3"></small></p>
 
                             <p>
                                 <span>性别</span>
-                                {% if  teacher.gender %}
+                                {% if  student.gender %}
                                 <input type="text" class="form-control" value="男" readonly>
                                 {% else %}
                                 <input type="text" class="form-control" value="女" readonly>
@@ -123,31 +123,31 @@
 
                             <p>
                                 <span>身份证号</span>
-                                <input type="text" class="form-control" value="{{ teacher.card_id }}" readonly>
+                                <input type="text" class="form-control" value="{{ student.card_id }}" readonly>
 
                                 <br>
                                 <small id="errCardId3"></small></p>
                             <p>
                                 <span>所属学院</span>
-                                <input type="text" class="form-control" value="{{ teacher.college.name }}" readonly>
+                                <input type="text" class="form-control" value="{{ student.college.name }}" readonly>
                                 <br>
                                 <small id="errCollege3"></small></p>
 
                             <p>
-                                <span>职位</span>
-                                 <input type="text" class="form-control" value="{{ teacher.position.name }}" readonly>
+                                <span>年级</span>
+                                 <input type="text" class="form-control" value="{{ student.grade.name }}" readonly>
 
                                 <br>
                                 <small id="errPos3"></small></p>
                             <p>
                                 <span>电子邮箱</span>
-                                 <input name="email" type="text" class="form-control" value="{{ teacher.email }}">
+                                 <input name="email" type="text" class="form-control" value="{{ student.email }}">
 
                                 <br>
                                 <small id="errEmail3"></small></p>
                             <p>
                                 <span>电话</span>
-                                 <input name="tel" type="number" class="form-control" value="{{ teacher.tel }}">
+                                 <input name="tel" type="number" class="form-control" value="{{ student.tel }}">
 
                                 <br>
                                 <small id="errTel3"></small></p>
@@ -158,7 +158,7 @@
                     <div class="modal-footer">
                     <small><b id="err_msg3" style="float: left"></b></small>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary"onclick="editT()">确定</button>
+                    <button type="button" class="btn btn-primary"onclick="editS()">确定</button>
                 </div>
 
                 </div>
@@ -170,22 +170,22 @@
             $("#nav5").addClass("active");
 
         function edit() {
-        $('#editTeacher').modal('show');
+        $('#editStudent').modal('show');
 
     }
 
-        function editT() {
+        function editS() {
 
             $("#errEmail3").html("");
             $("#errTel3").html("");
             $.ajax({
-                url: "editTeacher",
+                url: "/s/editStudent",
                 type: "POST",
                 dataType: "json",
                 data: $("#edit-fm2").serialize(),
                 success:function (arg) {
                     if(arg.status==true){
-                        $("#editTeacher").modal("hide");
+                        $("#editStudent").modal("hide");
                         window.location.reload();
                     }else {
                         console.log("failed");

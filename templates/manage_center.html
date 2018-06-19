@@ -61,7 +61,7 @@
 {% endblock %}
 {% block body %}
 
-    <div class="content container">
+<div class="content container">
     <div class="nav-left">
         <ul class="list-group">
           <a href="#"><li class="list-group-item" id="left-nav1" onclick="m_course()">课程管理 </li></a>
@@ -71,11 +71,12 @@
         </ul>
     </div>
     <div class="nav-right">
-    <iframe src="/m_course">
+        <iframe src="/m_course">
+        </iframe>
+    </div>
+</div>
 
-    </iframe>
-    </div>
-    </div>
+
 <div class="modal fade" id="courseDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -135,8 +136,6 @@
         </div>
     </div>
 
-
-
 <!-- Modal -->
 <div class="modal fade" id="newsDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -163,7 +162,6 @@
     </div>
   </div>
 </div>
-
 
 <div class="modal fade" id="addTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -311,7 +309,6 @@
         </div>
     </div>
 
-
 <div class="modal fade" id="teacherDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -429,7 +426,6 @@
             </div>
         </div>
     </div>
-
 
 <div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -575,8 +571,6 @@
         </div>
     </div>
 
-
-
 <script>
         $("#nav5").addClass("active");
 
@@ -608,10 +602,9 @@
                     if(arg.status==true){
                         $("#editTeacher").modal("hide");
                         $('iframe').attr('src', $('iframe').attr('src'));
-
                     }else {
-                        console.log("failed")
-                        console.log(arg.msg.tel)
+                        console.log("failed");
+                        console.log(arg.msg.tel);
                        $("#err_msg2").html(arg.msg).css("color","red");
                         $("#errName2").html(arg.msg.name).css("color","red");
                         $("#errGender2").html(arg.msg.gender).css("color","red");
@@ -620,14 +613,12 @@
                         $("#errPos2").html(arg.msg.position_id).css("color","red");
                         $("#errEmail2").html(arg.msg.email).css("color","red");
                         $("#errTel2").html(arg.msg.tel).css("color","red");
-
                     }
                 }
             })
         }
 
         function editS() {
-
             $("#err_msg3").html("");
             $("#errName3").html("");
             $("#errNo3").html("");
@@ -637,7 +628,6 @@
             $("#errPos3").html("");
             $("#errEmail3").html("");
             $("#errTel3").html("");
-
             $.ajax({
                 url: "/editStudent",
                 type: "POST",
@@ -647,10 +637,8 @@
                     if(arg.status==true){
                         $("#editStudent").modal("hide");
                         $('iframe').attr('src', $('iframe').attr('src'));
-
                     }else {
-                        console.log("failed")
-
+                        console.log("failed");
                        $("#err_msg3").html(arg.msg).css("color","red");
                         $("#errName3").html(arg.msg.name).css("color","red");
                         $("#errGender3").html(arg.msg.gender).css("color","red");
@@ -718,7 +706,6 @@
                     if(arg.status==true){
                         $("#addTeacher").modal("hide");
                         $('iframe').attr('src', $('iframe').attr('src'));
-
                     }else{
                         console.log("失败");
                         $("#err_msg").html(arg.msg).css("color","red");
@@ -730,12 +717,11 @@
                         $("#errPos").html(arg.msg.position_id).css("color","red");
                         $("#errEmail").html(arg.msg.email).css("color","red");
                         $("#errTel").html(arg.msg.tel).css("color","red");
-
                     }
                 }
-
             })
         }
+
 
         function addS() {
             $("#err_msg4").html("");
@@ -756,7 +742,6 @@
                     if(arg.status==true){
                         $("#addStudent").modal("hide");
                             $('iframe').attr('src', $('iframe').attr('src'));
-
                     }else{
                         console.log("失败");
                         $("#err_msg4").html(arg.msg).css("color","red");
@@ -768,11 +753,11 @@
                         $("#errGrade4").html(arg.msg.grade_id).css("color","red");
                         $("#errEmail4").html(arg.msg.email).css("color","red");
                         $("#errTel4").html(arg.msg.tel).css("color","red");
-
                     }
                 }
 
             })
         }
+
 </script>
 {% endblock %}

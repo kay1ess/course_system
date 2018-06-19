@@ -1,4 +1,4 @@
-{% extends "t_base.html" %}
+{% extends "edu_base.html" %}
 
 {% block title %}
 个人中心
@@ -36,11 +36,11 @@
             <tbody>
                 <tr>
                     <th>姓名</th>
-                    <td>{{ teacher.name }}</td>
+                    <td>{{ edu.name }}</td>
                 </tr>
             <tr>
                     <th>性别</th>
-                    <td>{% if teacher.gender %}
+                    <td>{% if edu.gender %}
                         男
                         {% else %}
                         女
@@ -50,27 +50,24 @@
                 </tr>
                  <tr>
                     <th>身份证号</th>
-                    <td>{{ teacher.card_id }}</td>
+                    <td>{{ edu.card_id }}</td>
                 </tr>
             <tr>
                     <th>工号</th>
-                    <td>{{ teacher.no }}</td>
+                    <td>{{ edu.no }}</td>
                 </tr>
             <tr>
                     <th>职位</th>
-                    <td>{{ teacher.position }}</td>
+                    <td>{{ edu.position }}</td>
                 </tr>
-            <tr>
-                    <th>学院</th>
-                    <td>{{ teacher.college.name }}</td>
-                </tr>
+
             <tr>
                     <th>电子邮箱</th>
-                    <td>{{ teacher.email }}</td>
+                    <td>{{ edu.email }}</td>
                 </tr>
             <tr>
                     <th>电话号码</th>
-                    <td>{{ teacher.tel }}</td>
+                    <td>{{ edu.tel }}</td>
                 </tr>
 
 
@@ -85,7 +82,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="editTeacher" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="editEdu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -100,20 +97,20 @@
                             {% csrf_token %}
                                 <p>
                                 <span>姓名</span>
-                                <input type="text" class="form-control" value="{{ teacher.name }}" readonly>
+                                <input type="text" class="form-control" value="{{ edu.name }}" readonly>
                                 <br>
                                 <small id="errName3"></small></p>
 
                             <p class="sno-setting">
                                 <span>工号</span>
-                                <input name="no" type="text" class="form-control" value="{{ teacher.no }}" readonly>
+                                <input name="no" type="text" class="form-control" value="{{ edu.no }}" readonly>
 
                                 <br>
                                 <small id="errNo3"></small></p>
 
                             <p>
                                 <span>性别</span>
-                                {% if  teacher.gender %}
+                                {% if  edu.gender %}
                                 <input type="text" class="form-control" value="男" readonly>
                                 {% else %}
                                 <input type="text" class="form-control" value="女" readonly>
@@ -123,31 +120,26 @@
 
                             <p>
                                 <span>身份证号</span>
-                                <input type="text" class="form-control" value="{{ teacher.card_id }}" readonly>
+                                <input type="text" class="form-control" value="{{ edu.card_id }}" readonly>
 
                                 <br>
                                 <small id="errCardId3"></small></p>
-                            <p>
-                                <span>所属学院</span>
-                                <input type="text" class="form-control" value="{{ teacher.college.name }}" readonly>
-                                <br>
-                                <small id="errCollege3"></small></p>
 
                             <p>
                                 <span>职位</span>
-                                 <input type="text" class="form-control" value="{{ teacher.position.name }}" readonly>
+                                 <input type="text" class="form-control" value="{{ edu.position.name }}" readonly>
 
                                 <br>
                                 <small id="errPos3"></small></p>
                             <p>
                                 <span>电子邮箱</span>
-                                 <input name="email" type="text" class="form-control" value="{{ teacher.email }}">
+                                 <input name="email" type="text" class="form-control" value="{{ edu.email }}">
 
                                 <br>
                                 <small id="errEmail3"></small></p>
                             <p>
                                 <span>电话</span>
-                                 <input name="tel" type="number" class="form-control" value="{{ teacher.tel }}">
+                                 <input name="tel" type="number" class="form-control" value="{{ edu.tel }}">
 
                                 <br>
                                 <small id="errTel3"></small></p>
@@ -158,7 +150,7 @@
                     <div class="modal-footer">
                     <small><b id="err_msg3" style="float: left"></b></small>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary"onclick="editT()">确定</button>
+                    <button type="button" class="btn btn-primary"onclick="editEdu()">确定</button>
                 </div>
 
                 </div>
@@ -167,25 +159,25 @@
     </div>
 
     <script>
-            $("#nav5").addClass("active");
+            $("#nav6").addClass("active");
 
         function edit() {
-        $('#editTeacher').modal('show');
+        $('#editEdu').modal('show');
 
     }
 
-        function editT() {
+        function editEdu() {
 
             $("#errEmail3").html("");
             $("#errTel3").html("");
             $.ajax({
-                url: "editTeacher",
+                url: "editEdu",
                 type: "POST",
                 dataType: "json",
                 data: $("#edit-fm2").serialize(),
                 success:function (arg) {
                     if(arg.status==true){
-                        $("#editTeacher").modal("hide");
+                        $("#editEdu").modal("hide");
                         window.location.reload();
                     }else {
                         console.log("failed");
