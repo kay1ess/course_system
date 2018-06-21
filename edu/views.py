@@ -184,8 +184,6 @@ def manager_center(request):
                 email = obj.cleaned_data.get("email")
                 tel = obj.cleaned_data.get("tel")
 
-
-
                 User.objects.create_user(username=no,password=card_id[12:18])
                 user =  User.objects.filter(username=no).first()
                 no_id = user.id

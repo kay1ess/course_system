@@ -13,9 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
-
+from course import settings
 from patch import views as patch
 from edu import views as e_views
 from extra_app.DjangoUeditor import urls as DjangoUeditor_urls
@@ -30,9 +31,9 @@ urlpatterns = [
     path('e/index.html', e_views.index),
     path('e/pubCourse.html', e_views.pub_course),
     path('e/pubNews.html', e_views.pub_news),
-    path('e/newNews.html', e_views.edit_news),
+    path('newNews.html', e_views.edit_news, name="newNews"),
     path('e/approve.html', e_views.approve),
-    path('e/manageCenter.html', e_views.manager_center),
+    path('e/manageCenter.html', e_views.manager_center, name="MC"),
     path('e/info.html', e_views.info),
     path('e/editEdu', e_views.editEdu),
 
@@ -44,7 +45,7 @@ urlpatterns = [
     path('online_course', e_views.online_course),
 
     path('m_news',e_views.m_news),
-    path('m_news_detail', e_views.m_news_detail),
+    path('m_news_detail', e_views.m_news_detail, name="newsDetail"),
     path('del_news', e_views.del_news),
     re_path(r'mod_news.html(?P<nid>\d+)', e_views.mod_news, name="mod_news"),
 
@@ -89,9 +90,6 @@ urlpatterns = [
     path("resetPwdTea",e_views.resetPwdTea),
     path("resetPwdStu",e_views.resetPwdStu),
 
-
-
-
     path("course_excel_download", patch.course_excel_download),
     path("teacher_excel_download", patch.teacher_excel_download),
     path("student_excel_download", patch.student_excel_download),
@@ -99,4 +97,4 @@ urlpatterns = [
     path("patch_add_teacher", patch.patch_add_teacher, name="patch_add_teacher"),
     path("patch_add_course", patch.patch_add_course, name="patch_add_course"),
 
-]
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

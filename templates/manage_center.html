@@ -57,6 +57,9 @@
             color: red;
             font-size: 20px;
         }
+    #newsDetail .modal-content{
+        overflow: hidden;
+    }
 </style>
 {% endblock %}
 {% block body %}
@@ -777,7 +780,7 @@
             $("#errEmail").html("");
             $("#errTel").html("");
             $.ajax({
-                url:'manageCenter.html',
+                url:'{% url "MC" %}',
                 type: "POST",
                 dataType: "JSON",
                 data: $("#fm").serialize(),

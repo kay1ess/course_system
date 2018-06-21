@@ -93,7 +93,7 @@ function editNews() {
                 data: $("#newfm").serialize(),
                 success:function (arg) {
                     if(arg.status==true){
-                        window.location.href = "/e/manageCenter.html"
+                        window.location.href = "{% url "MC" %}"
                     }else {
                         console.log(arg.msg);
                         $("#err_title").html(arg.msg.title);
