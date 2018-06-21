@@ -42,7 +42,7 @@ def pub_course(request):
         if pub_form.is_valid():
             try:
 
-                NewCourse.objects.create(**pub_form.cleaned_data,created_by_id=EduAdmin.objects.filter(no__username=request.user).first().id)
+                NewCourse.objects.create(**pub_form.cleaned_data,created_by=EduAdmin.objects.get(no__username=request.user))
                 ret["msg"] = "发布成功"
 
             except Exception as e:

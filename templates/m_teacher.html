@@ -96,6 +96,7 @@
 
 
 
+
 <script>
     $.ajaxSetup({
 　　      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
@@ -104,6 +105,10 @@
     $(document).ready(function() {
         $(".sort-table").tablesorter();
     });
+
+    function pathchAdd() {
+        window.parent.$("#patchTea").modal("show");
+    }
 
     function edit(t) {
         window.parent.$('#editTeacher').modal('show');

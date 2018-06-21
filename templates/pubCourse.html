@@ -38,7 +38,7 @@
 
         <div class="fm-title">
             <a href="#"> <button type="button" class="btn btn-success" id="newCourse">发布新课程</button></a>
-            <a href="#"> <button type="button" class="btn btn-success">批量发布课程</button></a>
+            <a href="#"> <button type="button" class="btn btn-success" onclick="patchPub()">批量发布课程</button></a>
             <a href="#"> <button type="button" class="btn btn-primary">课程管理</button></a>
         </div>
 
@@ -142,16 +142,50 @@
         </div>
     </div>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="patchPub" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">批量发布课程</h4>
+      </div>
+      <div class="modal-body">
+        <small class="text-muted">请按照如图所示格式，上传xls文件，请注意格式必须为<b>xls</b></small>
+         <br>
+          <img src="/static/img/course.png" style="width: 550px;height: 300px;padding: 20px" \>
+        <a href="/course_excel_download" ><button type="button" class="btn btn-default">下载样表</button></a>
+      </div>
+      <div class="modal-footer">
+
+
+          <form class="form-group" enctype="multipart/form-data" action="{% url 'patch_add_course' %}" method="post">
+                {% csrf_token %}
+              <input  type="file" name="file" id="file_upload" accept="application/vnd.ms-excel" >
+                 <button  type="submit" class="btn btn-primary" onclick="FileUpload()">开始上传附件</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
     <script>
         $(function () {
             addEvent();
-        })
+        });
+
+        function patchPub() {
+           $("#patchPub").modal("show");
+        }
 
         function addEvent() {
             $("#newCourse").click(function () {
                 $("#addModal").modal("show");
             })
         }
+
         function pubCourse() {
             $("#err_msg").html("");
             $("#errNo").html("");

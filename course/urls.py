@@ -90,5 +90,13 @@ urlpatterns = [
     path("resetPwdStu",e_views.resetPwdStu),
 
 
-    path("teacher_create", patch.teacher_create),
+
+
+    path("course_excel_download", patch.course_excel_download),
+    path("teacher_excel_download", patch.teacher_excel_download),
+    path("student_excel_download", patch.student_excel_download),
+    path("patch_add_student", patch.patch_add_student, name="patch_add_student"),
+    path("patch_add_teacher", patch.patch_add_teacher, name="patch_add_teacher"),
+    path("patch_add_course", patch.patch_add_course, name="patch_add_course"),
+
 ]

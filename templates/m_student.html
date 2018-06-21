@@ -104,7 +104,9 @@
     $(document).ready(function() {
         $(".sort-table").tablesorter();
     });
-
+    function pathchAdd() {
+        window.parent.$("#patchStu").modal("show");
+    }
     function edit(t) {
         window.parent.$('#editStudent').modal('show');
         var sno = $(t).parent().parent().attr('sno');

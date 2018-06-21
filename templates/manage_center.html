@@ -571,6 +571,58 @@
         </div>
     </div>
 
+    <div class="modal fade" id="patchTea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">批量创建教师资料</h4>
+      </div>
+      <div class="modal-body">
+        <small class="text-muted">请按照如图所示格式，上传xls文件，请注意格式必须为<b>xls</b></small>
+         <br>
+          <img src="/static/img/teacher.png" style="width: 550px;height: 300px;padding: 20px" \>
+        <a href="/teacher_excel_download" ><button type="button" class="btn btn-default">下载样表</button></a>
+      </div>
+      <div class="modal-footer">
+
+
+          <form class="form-group" enctype="multipart/form-data" action="{% url 'patch_add_teacher' %}" method="post">
+                {% csrf_token %}
+              <input  type="file" name="file" id="file_upload" accept="application/vnd.ms-excel" >
+                 <button  type="submit" class="btn btn-primary" onclick="FileUpload()">开始上传附件</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="modal fade" id="patchStu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">批量创建学生资料</h4>
+      </div>
+      <div class="modal-body">
+        <small class="text-muted">请按照如图所示格式，上传xls文件，请注意格式必须为<b>xls</b></small>
+         <br>
+          <img src="/static/img/student.png" style="width: 550px;height: 300px;padding: 20px" \>
+        <a href="/student_excel_download" ><button type="button" class="btn btn-default">下载样表</button></a>
+      </div>
+      <div class="modal-footer">
+
+
+          <form class="form-group" enctype="multipart/form-data" action="{% url 'patch_add_student' %}" method="post">
+                {% csrf_token %}
+              <input  type="file" name="file" id="file_upload" accept="application/vnd.ms-excel" >
+                 <button  type="submit" class="btn btn-primary" onclick="FileUpload()">开始上传附件</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
         $("#nav5").addClass("active");
 
@@ -578,8 +630,35 @@
 　　      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
         });
 
-        var i = $(".tno-setting input").attr("readonly",true)
-        var j = $(".sno-setting input").attr("readonly",true)
+        var i = $(".tno-setting input").attr("readonly",true);
+        var j = $(".sno-setting input").attr("readonly",true);
+        
+        {#function FileUpload() {#}
+        {#    var form_data = new FormData();#}
+        {#    var file_info = $('#file_upload')[0].files[0];#}
+        {#    console.log(file_info)#}
+        {#    form_data.append('file',file_info);#}
+        {#    $.ajaxSetup({#}
+        {#        beforeSend: function(xhr, settings) {#}
+        {#            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {#}
+        {#                xhr.setRequestHeader("X-CSRFToken", csrftoken);#}
+        {#            }#}
+        {#        }#}
+        {#    });#}
+        {#    $.ajax({#}
+        {#        url:"{% url 'patch_add_student' %}",#}
+        {#        type:'POST',#}
+        {#        data: form_data,#}
+        {#        success: function(arg) {#}
+        {#            console.log(arg);#}
+        {##}
+        {#        },#}
+        {#        processData: false,  // tell jquery not to process the data#}
+        {#        contentType: false // tell jquery not to set contentType#}
+        {##}
+        {#    }); // end ajax#}
+        {##}
+        {#}#}
 
         function editT() {
 
