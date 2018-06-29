@@ -11,8 +11,8 @@ from teacher.models import Teacher
 
 
 class Student(models.Model):
-    no = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20)
+    no = models.OneToOneField(User, on_delete=models.CASCADE,db_index=True)
+    name = models.CharField(max_length=20,db_index=True)
     gender = models.BooleanField()
     tel = models.CharField(max_length=11)
     card_id = models.CharField(max_length=18, unique=True)

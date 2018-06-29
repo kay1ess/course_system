@@ -2,9 +2,12 @@ import json
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
+
+from course.ulti import MyPagination
 from edu.models import NewCourse, News
 from teacher.form import AppForm
 from teacher.models import AppliedCourse, AppliedCourse_Pos_Ti, Teacher
@@ -35,54 +38,47 @@ def index(request):
 def app_course(request):
     if request.method == "GET":
         obj = AppForm()
-        courses = NewCourse.objects.filter(status=0).order_by('-ctime')
-        return render(request, "t_appCourse.html", {"courses":courses, "obj":obj})
+        courses = NewCourse.objects.filter(status=0,is_applied=False).order_by('-ctime')
+        obj2 = MyPagination(courses.count(), request.GET.get('p'), 10, url='appCourse.html')
+        courses = courses[obj2.start():obj2.end()]
+        return render(request, "t_appCourse.html", {"courses":courses,"obj":obj, "obj2":obj2})
     if request.method == "POST":
         ret = {"status":True, "msg":None}
         obj = AppForm(request.POST)
-
         teacher_id = Teacher.objects.filter(no__username=request.user).first().id
         if obj.is_valid():
             try:
-                AppliedCourse.objects.create(
-                    no=obj.cleaned_data.get("no"),
-                    name=obj.cleaned_data.get("name"),
-                    college_id=obj.cleaned_data.get("college_id"),
-                    credit=obj.cleaned_data.get("credit"),
-                    classroom_id=obj.cleaned_data.get("classroom_id"),
-                    week_id=obj.cleaned_data.get("week_id"),
-                    time_id=obj.cleaned_data.get("time_id"),
-                    teacher_id=teacher_id
-                )
+                with transaction.atomic():
+                    AppliedCourse.objects.create(
+                        no=obj.cleaned_data.get("no"),
+                        name=obj.cleaned_data.get("name"),
+                        college_id=obj.cleaned_data.get("college_id"),
+                        credit=obj.cleaned_data.get("credit"),
+                        classroom_id=obj.cleaned_data.get("classroom_id"),
+                        week_id=obj.cleaned_data.get("week_id"),
+                        time_id=obj.cleaned_data.get("time_id"),
+                        teacher_id=teacher_id
+                    )
 
-                AppliedCourse_Pos_Ti.objects.create(
-                    classroom_id=obj.cleaned_data.get("classroom_id"),
-                    week_id=obj.cleaned_data.get("week_id"),
-                    time_id=obj.cleaned_data.get("time_id"),
-                    applied_course_id=AppliedCourse.objects.last().id,
-                    teacher_id=teacher_id
-                                                    )
-                NewCourse.objects.filter(no=obj.cleaned_data.get("no")).update(status=1)
-                print(obj.cleaned_data.get("no")+"申请成功")
-                ret["msg"] = "申请成功"
+                    AppliedCourse_Pos_Ti.objects.create(
+                        classroom_id=obj.cleaned_data.get("classroom_id"),
+                        week_id=obj.cleaned_data.get("week_id"),
+                        time_id=obj.cleaned_data.get("time_id"),
+                        applied_course_id=AppliedCourse.objects.last().id,
+                        teacher_id=teacher_id
+                                                        )
+                    NewCourse.objects.filter(no=obj.cleaned_data.get("no")).update(status=1)
+                    print(obj.cleaned_data.get("no")+"申请成功")
+                    ret["msg"] = "申请成功"
             except Exception as e:
-
+                print(str(e))
                 if str(e) == "UNIQUE constraint failed: teacher_appliedcourse_pos_ti.classroom_id, teacher_appliedcourse_pos_ti.time_id, teacher_appliedcourse_pos_ti.week_id":
-                    AppliedCourse.objects.filter(no=obj.cleaned_data.get("no")).delete()
-                    NewCourse.objects.filter(no=obj.cleaned_data.get("no")).update(status=None)
                     ret["status"] = False
-                    ret["msg"] = "在该时段教室已被使用，请尝试选择另一个时间段"
-                    print(str(e))
-                    return HttpResponse(json.dumps(ret, ensure_ascii=False))
-                else:
-                    ret["status"] = False
-                    ret["msg"] = "操作失败，请重新尝试或者联系系统管理员" + str(e)
-                    print(str(e))
+                    ret["msg"] = "该教室已被使用，请另选择时间段或教室"
                     return HttpResponse(json.dumps(ret, ensure_ascii=False))
             return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
         else:
-
             ret["status"] = False
             ret["msg"] = "申请数据有误，请重新尝试"
             return HttpResponse(json.dumps(ret, ensure_ascii=False))

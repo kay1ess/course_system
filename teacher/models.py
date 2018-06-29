@@ -52,8 +52,8 @@ class AppliedCourse_Pos_Ti(models.Model):
 
 
 class Teacher(models.Model):
-    no = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20, null=False, blank=False)
+    no = models.OneToOneField(User, on_delete=models.CASCADE,db_index=True)
+    name = models.CharField(max_length=20, null=False, blank=False,db_index=True)
     gender = models.BooleanField()
     card_id = models.CharField(max_length=18)
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True)

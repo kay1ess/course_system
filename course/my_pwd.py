@@ -20,4 +20,5 @@ class MyValidtor:
     def get_help_text(self):
         return "你的密码必须还有 %(upper_num)d 个大写字母" % {"upper_num": self.upper_num}
 
+object
 

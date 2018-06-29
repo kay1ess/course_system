@@ -75,6 +75,13 @@
             padding: 10px;
 
         }
+        .tip {
+            position: relative;
+            width: 140px;
+            height: 30px;
+            left: 92%;
+
+        }
     </style>
 
 </head>
@@ -113,14 +120,41 @@
                     <div class="alert alert-danger" id="errMsg5"></div>
                 <button type="button" class="btn btn-primary" onclick="SubEvent();">登录</button>
                 </div>
-                <a class="text-muted"><a href="#"> 忘记密码？</a>
+                <a  class="text-muted" data-toggle="popover"
+                    data-placement="bottom" data-content="请联系教务或系统管理员" id="example" onclick="tip()"
+                > 忘记密码？</a>
+
+
+
             </form>
+        <div class="tip">
+            <p class="bg-info">
+                测试账户:
+                <br>
+                <small class="text-muted">教务：88880001</small>
+                <br>
+                <small class="text-muted">教师1：99990001</small>
+                <br>
+                <small class="text-muted">教师2：99990002</small>
+                <br>
+                <small class="text-muted">学生1：20180630001</small>
+                <br>
+                <small class="text-muted">学生2：20180630002</small><br>
+                <small class="text-muted">所有密码均为：test1234</small>
+            </p>
         </div>
+        </div>
+
+
 
 <script>
     $.ajaxSetup({
 　　data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
     });
+
+    function tip() {
+        $('#example').popover("show")
+    }
 
     function SubEvent() {
         $.ajax({

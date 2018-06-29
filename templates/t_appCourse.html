@@ -74,6 +74,13 @@
                     {% endif %}
                 </tbody>
             </table>
+        {% if obj2.num_pages %}
+            <ul class="pagination">
+            <li>
+            {{ obj2.page_range_str|safe }}
+            </li>
+          </ul>
+            {% endif %}
         </div>
     </div>
     </div>
